@@ -1,12 +1,5 @@
-import express, { application, Express } from "express";
-import router from "./routes";
+import App from './app';
 
-const app: Express = express();
-
-app.listen(9092, () => {
-    console.log("server cargado csm")
-    console.log('soy muy gozu gaa')
-
+App.listen(9098, () => {
 })
 
-app.use("/", router);
