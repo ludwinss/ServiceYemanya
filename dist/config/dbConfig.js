@@ -1,7 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.dbConfig = void 0;
 const DB_URI = process.env.SERVE_DB_URI;
-let dbConfig: string = "";
+let dbConfig = "";
+exports.dbConfig = dbConfig;
 if (DB_URI || DB_URI === "")
-    dbConfig = DB_URI;
+    exports.dbConfig = dbConfig = DB_URI;
 else {
     const tmpDBConfig = {
         database: process.env.SERVE_DB_DATABASE || "",
@@ -10,8 +14,7 @@ else {
         host: process.env.SERVE_DB_HOST || "",
         port: process.env.SERVE_DB_PORT || "",
         dialect: process.env.SERVE_DIALECT || ""
-    }
-    dbConfig = `${tmpDBConfig.dialect}://${tmpDBConfig.username}:${tmpDBConfig.password}@${tmpDBConfig.host}:${tmpDBConfig.port}/${tmpDBConfig.database}`
+    };
+    exports.dbConfig = dbConfig = `${tmpDBConfig.dialect}://${tmpDBConfig.username}:${tmpDBConfig.password}@${tmpDBConfig.host}:${tmpDBConfig.port}/${tmpDBConfig.database}`;
 }
-
-export { dbConfig };
+//# sourceMappingURL=dbConfig.js.map

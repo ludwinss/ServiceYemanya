@@ -2,14 +2,13 @@ import express, { Application } from "express";
 
 import "./config/env";
 
-import "./models/index"
-import router from "./routes";
+import { productRoute } from "./routes";
 
 //DotEnv Config 
 
 const app: Application = express();
 
-app.use("/", router);
+app.use("/api", productRoute);
 
 
 export default app;
