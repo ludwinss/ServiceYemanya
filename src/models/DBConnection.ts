@@ -1,5 +1,5 @@
 import { Sequelize as SequelizeProps } from "sequelize/types";
-import { dbConfig } from "config/dbConfig"
+import { dbConfig } from "../config/dbConfig"
 
 import { Sequelize } from 'sequelize';
 
@@ -7,6 +7,9 @@ class DBConnection {
     protected static _instance: SequelizeProps;
     private _createInstance(): Sequelize {
         return new Sequelize(dbConfig, {
+            define: {
+                timestamps: false
+            },
             dialectOptions: {
                 ssl: {
                     require: true,

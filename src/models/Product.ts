@@ -1,8 +1,7 @@
-import DBConnection from "models/DBConnection";
+import DBConnection from "../models/DBConnection";
 import { CreateOptions, DataTypes, InferAttributes, InferCreationAttributes, Model } from "sequelize";
 
 class Product extends Model<InferAttributes<Product>, InferCreationAttributes<Product>>{
-    declare id: CreateOptions<number>;
     declare name: string;
     declare description: string | null;
     declare category: string | null;
@@ -12,7 +11,7 @@ class Product extends Model<InferAttributes<Product>, InferCreationAttributes<Pr
 Product.init(
     {
         id: {
-            type: DataTypes.INTEGER.UNSIGNED,
+            type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
@@ -22,7 +21,7 @@ Product.init(
         },
         description: {
             type: DataTypes.STRING(5000),
-            allowNull: false
+            allowNull: true
         },
         category: {
             type: DataTypes.STRING(1000),
