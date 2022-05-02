@@ -1,2 +1,4 @@
 import productRoute from "./product.route";
-export { productRoute }
+import productPhotoRoute from "./productPhoto.route";
+
+export { productRoute, productPhotoRoute }
