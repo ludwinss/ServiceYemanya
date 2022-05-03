@@ -1,5 +1,5 @@
 export interface IProductPhoto {
     id_product: bigint,
-    image: bigint,
+    image: any;
     legend: string
 }
