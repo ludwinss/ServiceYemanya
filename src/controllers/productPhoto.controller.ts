@@ -1,16 +1,9 @@
 import { Request, Response } from 'express';
 
-import {
-  response200,
-  response404,
-  response500
-} from '../constants/APIresponse';
+import { response200, response404, response500 } from '../constants/APIresponse';
 import { ProductPhoto } from '../models';
 
-const productPhotoController:
-  Record<
-    string,
-    (req: Request, res: Response) => void> = {
+const productPhotoController: Record<string, (req: Request, res: Response) => void> = {
   getPhotoByProduct: async (req, res) => {
     try {
       const { id } = req.params;

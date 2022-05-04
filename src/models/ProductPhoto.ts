@@ -1,17 +1,8 @@
-import {
-  CreationOptional,
-  DataTypes,
-  InferAttributes,
-  InferCreationAttributes,
-  Model
-} from 'sequelize';
+import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
 
 import DBConnection from './DBConnection';
 
-class ProductPhoto extends Model<
-  InferAttributes<ProductPhoto>,
-  InferCreationAttributes<ProductPhoto>
-> {
+class ProductPhoto extends Model<InferAttributes<ProductPhoto>, InferCreationAttributes<ProductPhoto>> {
   declare id: CreationOptional<bigint>;
 
   declare id_product: bigint;
