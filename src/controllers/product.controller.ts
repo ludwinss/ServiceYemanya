@@ -1,7 +1,7 @@
 import { Response, Request } from "express";
 import { Product } from "../models";
 import { response200, response404, response500 } from "../constants/APIresponse";
-import { IProduct } from "utils/interfaces/IProduct";
+import { IProduct } from "../utils/interfaces/IProduct";
 
 const productController: Record<string, (req: Request, res: Response) => void> = {
     getAll: async (req, res) => {

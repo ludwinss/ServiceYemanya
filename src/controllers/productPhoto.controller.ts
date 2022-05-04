@@ -1,8 +1,6 @@
 import { Request, Response } from "express"
 import { response200, response404, response500 } from "../constants/APIresponse";
-import ProductPhoto from "../models/ProductPhoto";
-import { IProductPhoto } from "utils/interfaces/IProductPhoto";
-import fs from 'fs';
+import { ProductPhoto } from "../models";
 
 const productPhotoController: Record<string, (req: Request, res: Response) => void> = {
     getPhotoByProduct: async (req, res) => {
@@ -23,23 +21,39 @@ const productPhotoController: Record<string, (req: Request, res: Response) => vo
     },
     createPhotoByProduct: async (req, res) => {
         try {
-            const photo: IProductPhoto = req.body;
-            // photo.image = Buffer.from(photo.image, 'base64');
-            var stream;
-            var f;
-            stream = await fs.createReadStream("E://image.jpg");
+            req.on('data', function (dat) {
+                console.log(Buffer.from(dat).toString())
+            })
+            // const photo: IProductPhoto = req.body;
+            // const f = Buffer.from(photo.image,'base64');
+            // let imgData: any = new Blob([photo.image.buffer], { type: 'image/jpeg' });
+            // const data = fs.readFile(photo.image, 'binary', (data) => {
+            //     console.log(data)
+            // })
 
-            stream.on("data", async function (data) {
-                photo.image = data
-                const response = await ProductPhoto.create(photo);
-                if (!response) {
-                    res.status(404).send(response404('Product Photo'));
-                }
-                res.status(200).send(response200(response))
-            });
-            // let imgData = new Blob([photo.image.buffer], { type: 'image/jpeg' });
-            // photo.image = imgData.stream()
-            //    photo.image = imgData
+            // const stream = Readable.from(photo.image.toString());
+            // stream.on('readable', async (f: any) => {
+            //     photo.image = stream.()
+            //     const response = await ProductPhoto.create(photo);
+            //     if (!response) {
+            //         res.status(404).send(response404('Product Photo'));
+            //     }
+            //     res.status(200).send(response200(response))
+            // })
+
+            // var stream;
+            // stream = await fs.createReadStream('E://image.jpg');
+
+            // stream.on("data", async function (data) {
+            //     // photo.image = data
+            //     console.log(data.length, f.length)
+            //     // const response = await ProductPhoto.create(photo);
+            //     // if (!response) {
+            //     //     res.status(404).send(response404('Product Photo'));
+            //     // }
+            //     // res.status(200).send(response200(response))
+            // // });
+            // photo.image = f
             // const response = await ProductPhoto.create(photo);
             // if (!response) {
             //     res.status(404).send(response404('Product Photo'));

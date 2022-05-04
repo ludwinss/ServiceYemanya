@@ -1,6 +1,6 @@
 type IData<T> = Array<T> | T | null;
 
-const response200 = (data: IData<T>) => ({
+const response200 = (data: IData<any>) => ({
     message: 'Success Request',
     data: data
 })
