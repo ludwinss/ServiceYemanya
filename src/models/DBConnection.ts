@@ -1,7 +1,7 @@
-import { Sequelize } from "sequelize";
-import { Sequelize as SequelizeProps } from "sequelize/types";
+import { Sequelize } from 'sequelize';
+import { Sequelize as SequelizeProps } from 'sequelize/types';
 
-import { dbConfig } from "../config/dbConfig";
+import { dbConfig } from '../config/dbConfig';
 
 class DBConnection {
   protected static _instance: SequelizeProps;
@@ -9,20 +9,20 @@ class DBConnection {
   private _createInstance(): Sequelize {
     return new Sequelize(dbConfig, {
       define: {
-        timestamps: false,
+        timestamps: false
       },
       dialectOptions: {
         ssl: {
           require: true,
-          rejectUnauthorized: false,
-        },
+          rejectUnauthorized: false
+        }
       },
       pool: {
         max: 10,
         min: 0,
         acquire: 3000,
-        idle: 10000,
-      },
+        idle: 10000
+      }
     });
   }
 

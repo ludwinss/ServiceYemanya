@@ -1,21 +1,26 @@
-import { response200, response404, response500 } from "constants/APIresponse";
-import { Request, Response } from "express";
-import { ProductPhoto } from "models";
+import { Request, Response } from 'express';
 
-const productPhotoController: Record<
-  string,
-  (req: Request, res: Response) => void
-> = {
+import {
+  response200,
+  response404,
+  response500
+} from '../constants/APIresponse';
+import { ProductPhoto } from '../models';
+
+const productPhotoController:
+  Record<
+    string,
+    (req: Request, res: Response) => void> = {
   getPhotoByProduct: async (req, res) => {
     try {
       const { id } = req.params;
       const response = await ProductPhoto.findAndCountAll({
         where: {
-          id_product: id,
-        },
+          id_product: id
+        }
       });
       if (!response) {
-        res.status(404).send(response404("Product Photo"));
+        res.status(404).send(response404('Product Photo'));
       }
       res.status(200).send(response200(response));
     } catch (e) {
@@ -24,7 +29,7 @@ const productPhotoController: Record<
   },
   createPhotoByProduct: async (req, res) => {
     try {
-      req.on("data", function (dat) {
+      req.on('data', function (dat) {
         console.log(Buffer.from(dat).toString());
       });
       // const photo: IProductPhoto = req.body;
@@ -65,7 +70,7 @@ const productPhotoController: Record<
     } catch (e) {
       res.status(500).send(response500(String(e)));
     }
-  },
+  }
 };
 
 export default productPhotoController;

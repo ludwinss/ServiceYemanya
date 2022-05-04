@@ -3,10 +3,10 @@ import {
   DataTypes,
   InferAttributes,
   InferCreationAttributes,
-  Model,
-} from "sequelize";
+  Model
+} from 'sequelize';
 
-import DBConnection from "./DBConnection";
+import DBConnection from './DBConnection';
 
 class ProductPhoto extends Model<
   InferAttributes<ProductPhoto>,
@@ -27,25 +27,25 @@ ProductPhoto.init(
       type: DataTypes.UUID,
       allowNull: false,
       primaryKey: true,
-      autoIncrement: true,
+      autoIncrement: true
     },
     id_product: {
       type: DataTypes.BIGINT,
       allowNull: false,
-      primaryKey: true,
+      primaryKey: true
     },
     image: {
       type: DataTypes.BLOB,
-      allowNull: false,
+      allowNull: false
     },
     legend: {
       type: DataTypes.STRING(100),
-      allowNull: false,
-    },
+      allowNull: false
+    }
   },
   {
     sequelize: DBConnection.getInstance(),
-    tableName: "product_photo",
+    tableName: 'product_photo'
   }
 );
 

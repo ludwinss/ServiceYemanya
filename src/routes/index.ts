@@ -1,4 +1,4 @@
-import productRoute from "./product.route";
-import productPhotoRoute from "./productPhoto.route";
+import productRoute from './product.route';
+import productPhotoRoute from './productPhoto.route';
 
 export { productPhotoRoute, productRoute };

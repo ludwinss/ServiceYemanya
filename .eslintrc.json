@@ -1,10 +1,13 @@
 {
+  "root": true,
   "parser": "@typescript-eslint/parser",
   "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:prettier/recommended"
+    "prettier"
   ],
-  "plugins": ["simple-import-sort", "import"],
+  "plugins": ["simple-import-sort", "import", "prettier"],
   "parserOptions": {
     "ecmaVersion": 12,
     "sourceType": "module"
@@ -14,6 +17,7 @@
     "simple-import-sort/exports": "error",
     "import/first": "error",
     "import/newline-after-import": "error",
-    "import/no-duplicates": "error"
+    "import/no-duplicates": "error",
+    "@typescript-eslint/no-explicit-any": 2
   }
 }
