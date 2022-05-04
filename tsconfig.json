@@ -7,18 +7,13 @@
     "strict": true,
     "sourceMap": false,
     "module": "commonjs",
-    "target": "es6",
     "noImplicitAny": true,
+    "target": "es6",
     "noEmit": false,
     "noUnusedLocals": true,
     "outDir": "./dist",
-    "rootDir": "."
+    "baseUrl": "."
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.d.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["src/**/*.ts", "src/**/*.d.ts"],
+  "exclude": ["node_modules"]
 }

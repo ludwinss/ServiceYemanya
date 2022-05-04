@@ -1,7 +1,8 @@
 const DB_URI = process.env.SERVE_DB_URI;
 let dbConfig = "";
-if (DB_URI || DB_URI === "") dbConfig = DB_URI;
-else {
+if (DB_URI || DB_URI === "") {
+  dbConfig = DB_URI;
+} else {
   const tmpDBConfig = {
     database: process.env.SERVE_DB_DATABASE || "",
     username: process.env.SERVE_DB_USERNAME || "",

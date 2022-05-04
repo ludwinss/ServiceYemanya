@@ -2,11 +2,11 @@ type IData<T> = Array<T> | T | null;
 
 const response200 = (data: IData<any>) => ({
   message: "Success Request",
-  data: data,
+  data,
 });
 
 const response404 = (name: string) => ({
-  message: `${name} doesn\'t found`,
+  message: `${name} doesn't found`,
   data: [],
 });
 

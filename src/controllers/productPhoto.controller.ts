@@ -1,11 +1,6 @@
+import { response200, response404, response500 } from "constants/APIresponse";
 import { Request, Response } from "express";
-
-import {
-  response200,
-  response404,
-  response500,
-} from "../constants/APIresponse";
-import { ProductPhoto } from "../models";
+import { ProductPhoto } from "models";
 
 const productPhotoController: Record<
   string,

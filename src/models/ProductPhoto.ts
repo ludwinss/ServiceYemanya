@@ -22,31 +22,31 @@ class ProductPhoto extends Model<
 }
 
 ProductPhoto.init(
-	{
+  {
     id: {
-			type: DataTypes.UUID,
-			allowNull: false,
-			primaryKey: true,
-			autoIncrement: true,
+      type: DataTypes.UUID,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true,
     },
     id_product: {
-			type: DataTypes.BIGINT,
-			allowNull: false,
-			primaryKey: true,
+      type: DataTypes.BIGINT,
+      allowNull: false,
+      primaryKey: true,
     },
     image: {
-			type: DataTypes.BLOB,
-			allowNull: false,
+      type: DataTypes.BLOB,
+      allowNull: false,
     },
     legend: {
-			type: DataTypes.STRING(100),
-			allowNull: false,
+      type: DataTypes.STRING(100),
+      allowNull: false,
     },
-	},
-	{
+  },
+  {
     sequelize: DBConnection.getInstance(),
     tableName: "product_photo",
-	}
+  }
 );
 
 export default ProductPhoto;
