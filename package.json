@@ -8,7 +8,9 @@
     "start": "cross-env NODE_ENV=production node ./dist/index.js",
     "dev": "cross-env NODE_ENV=development ts-node-dev  src/index.ts",
     "lint": "eslint --ignore-path .gitignore . --ext .ts",
-    "lint:fix": "npm run lint -- --fix"
+    "lint:fix": "npm run lint -- --fix",
+    "prepare": "husky install",
+    "prettier:fix": "prettier --write ."
   },
   "author": "Ludwin Flores",
   "license": "MIT",
