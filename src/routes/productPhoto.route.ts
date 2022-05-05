@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { productImageHandle } from '../middlewares/uploadsImages';
 
 import controller from '../controllers/productPhoto.controller';
+import { productImageHandle } from '../middlewares/uploadsImages';
 
 const productPhotoRoute = Router();
 

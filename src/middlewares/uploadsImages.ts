@@ -12,17 +12,15 @@ function productImageHandle(req: Request, res: Response, next: NextFunction): vo
     //Cath fields sending type ProductPhoto
     incoming.parse(req, (err, fields: any, files) => {
       if (err) {
-        res.send(response500(String(err)))
+        res.send(response500(String(err)));
       }
       const instanceImage: FieldRequest = fields;
-      console.log(fields, instanceImage)
-    })
+      console.log(fields, instanceImage);
+    });
     next();
   } catch (e) {
-    res.send(response500(String(e)))
+    res.send(response500(String(e)));
   }
 }
-
-
 
 export { productImageHandle };

@@ -28,7 +28,6 @@ const productPhotoController: Record<string, (req: Request, res: Response) => vo
       // const data = fs.readFile(photo.image, 'binary', (data) => {
       //     console.log(data)
       // })
-
       // const stream = Readable.from(photo.image.toString());
       // stream.on('readable', async (f: any) => {
       //     photo.image = stream.()
@@ -38,10 +37,8 @@ const productPhotoController: Record<string, (req: Request, res: Response) => vo
       //     }
       //     res.status(200).send(response200(response))
       // })
-
       // var stream;
       // stream = await fs.createReadStream('E://image.jpg');
-
       // stream.on("data", async function (data) {
       //     // photo.image = data
       //     console.log(data.length, f.length)
