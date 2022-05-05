@@ -22,9 +22,6 @@ const productPhotoController: Record<string, (req: Request, res: Response) => vo
   },
   createPhotoByProduct: async (req, res) => {
     try {
-      req.on('data', function (dat) {
-        console.log(Buffer.from(dat).toString());
-      });
       // const photo: IProductPhoto = req.body;
       // const f = Buffer.from(photo.image,'base64');
       // let imgData: any = new Blob([photo.image.buffer], { type: 'image/jpeg' });

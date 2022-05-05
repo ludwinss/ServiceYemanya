@@ -12,7 +12,7 @@
     "noEmit": false,
     "noUnusedLocals": true,
     "outDir": "./dist",
-    "baseUrl": "."
+    "rootDir": "."
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts"],
   "exclude": ["node_modules"]
