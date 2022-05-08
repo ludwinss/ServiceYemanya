@@ -1,4 +1,11 @@
-import productRoute from './product.route';
-import productPhotoRoute from './productPhoto.route';
+import { Application } from 'express';
 
-export { productPhotoRoute, productRoute };
+import productRoute from './product.route';
+import productPhotoRoute from './product-photo.route';
+
+function enroutingAPI(app: Application) {
+  app.use('/api', productPhotoRoute);
+  app.use('/api', productRoute);
+}
+
+export { enroutingAPI };

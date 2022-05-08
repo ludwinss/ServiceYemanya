@@ -10,7 +10,8 @@
     "noImplicitAny": true,
     "target": "ES6",
     "noEmit": false,
-    "noUnusedLocals": true,
+    //change in production (TRUE)
+    "noUnusedLocals": false,
     "outDir": "./dist",
     "rootDir": "."
   },

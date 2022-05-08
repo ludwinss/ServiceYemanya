@@ -1,7 +1,7 @@
 import { Sequelize } from 'sequelize';
 import { Sequelize as SequelizeProps } from 'sequelize/types';
 
-import { dbConfig } from '../config/dbConfig';
+import { dbConfig } from '../config/db.config';
 
 class DBConnection {
   protected static _instance: SequelizeProps;

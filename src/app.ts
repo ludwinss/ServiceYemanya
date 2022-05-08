@@ -4,7 +4,7 @@ import './config/env';
 import express, { Application } from 'express';
 import path from 'path';
 
-import { productPhotoRoute, productRoute } from './routes';
+import { enroutingAPI } from './routes';
 
 const app: Application = express();
 
@@ -14,7 +14,6 @@ app.use(express.urlencoded({ extended: true, limit: '100mb' }));
 app.set('tmp', path.join(__dirname, '/tmp'));
 app.use(express.static(path.join(__dirname, '/tmp')));
 
-app.use('/api', productRoute);
-app.use('/api', productPhotoRoute);
+enroutingAPI(app);
 
 export default app;
