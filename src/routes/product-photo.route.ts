@@ -7,6 +7,7 @@ const productPhotoRoute = Router();
 const multerf = multer();
 
 productPhotoRoute.get('/product/image/:id', controller.getPhotoByProduct);
+productPhotoRoute.get('/product/image-teste', controller.test);
 productPhotoRoute.post('/product/image/add', multerf.any(), controller.createPhotoByProduct);
 productPhotoRoute.post('/product/image/delete', controller.deletePhotoByID);
 

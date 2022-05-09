@@ -12,19 +12,22 @@ import {
 import DBConnection from './DBConnection';
 import Product from './Product';
 
-class ProductPhoto extends Model<InferAttributes<ProductPhoto>, InferCreationAttributes<ProductPhoto>> {
+class Stock extends Model<InferAttributes<Stock>, InferCreationAttributes<Stock>> {
   declare id: CreationOptional<bigint>;
-  declare image: bigint;
-  declare legend: string;
+  declare total: number;
+  declare price: number;
   declare created_at: Date;
   declare updated_at: Date;
 
-  //Product(1:M)ProductPhoto
+  //foreignKeys
   declare id_product: ForeignKey<Product['id']>;
   declare product: NonAttribute<Product>;
+  declare static associations: {
+    product: Association<Stock, Product>;
+  };
 }
 
-ProductPhoto.init(
+Stock.init(
   {
     id: {
       type: DataTypes.BIGINT,
@@ -32,21 +35,12 @@ ProductPhoto.init(
       primaryKey: true,
       autoIncrement: true
     },
-    image: {
-      type: DataTypes.BLOB,
-      allowNull: false
-    },
-    legend: {
-      type: DataTypes.STRING(100),
-      allowNull: false
-    },
+    total: { type: DataTypes.INTEGER, allowNull: false },
+    price: { type: DataTypes.INTEGER, allowNull: false },
     created_at: DataTypes.DATE,
     updated_at: DataTypes.DATE
   },
-  {
-    sequelize: DBConnection.getInstance(),
-    tableName: 'product_photo'
-  }
+  { sequelize: DBConnection.getInstance(), tableName: 'stock' }
 );
 
-export default ProductPhoto;
+export default Stock;

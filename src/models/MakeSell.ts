@@ -11,20 +11,24 @@ import {
 
 import DBConnection from './DBConnection';
 import Product from './Product';
+import User from './User';
 
-class ProductPhoto extends Model<InferAttributes<ProductPhoto>, InferCreationAttributes<ProductPhoto>> {
+class MakeSell extends Model<InferAttributes<MakeSell>, InferCreationAttributes<MakeSell>> {
   declare id: CreationOptional<bigint>;
-  declare image: bigint;
-  declare legend: string;
+  declare amount: number;
+  declare price: number;
   declare created_at: Date;
   declare updated_at: Date;
 
-  //Product(1:M)ProductPhoto
+  //association User(N:M)MakeSell  and  User(N:M)Product
+  declare id_user: ForeignKey<User['id']>;
   declare id_product: ForeignKey<Product['id']>;
-  declare product: NonAttribute<Product>;
+
+  declare users: NonAttribute<User[]>;
+  declare products: NonAttribute<Product[]>;
 }
 
-ProductPhoto.init(
+MakeSell.init(
   {
     id: {
       type: DataTypes.BIGINT,
@@ -32,21 +36,15 @@ ProductPhoto.init(
       primaryKey: true,
       autoIncrement: true
     },
-    image: {
-      type: DataTypes.BLOB,
-      allowNull: false
-    },
-    legend: {
-      type: DataTypes.STRING(100),
-      allowNull: false
-    },
+    price: { type: DataTypes.INTEGER, allowNull: false },
+    amount: { type: DataTypes.INTEGER, allowNull: false },
     created_at: DataTypes.DATE,
     updated_at: DataTypes.DATE
   },
   {
     sequelize: DBConnection.getInstance(),
-    tableName: 'product_photo'
+    tableName: 'makesell'
   }
 );
 
-export default ProductPhoto;
+export default MakeSell;

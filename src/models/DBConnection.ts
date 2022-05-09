@@ -9,7 +9,8 @@ class DBConnection {
   private _createInstance(): Sequelize {
     return new Sequelize(dbConfig, {
       define: {
-        timestamps: false
+        timestamps: true,
+        underscored: true
       },
       dialectOptions: {
         ssl: {

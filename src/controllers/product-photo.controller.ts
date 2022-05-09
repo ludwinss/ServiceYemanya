@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 
 import { response200, response404, response500 } from '../constants/APIresponse';
-import { ProductPhoto } from '../models';
+import { DBConnection, MakeSell, Product, ProductPhoto, Stock, User } from '../models';
 import { IProductPhoto } from '../utils/interfaces/IProductPhoto';
 
 const productPhotoController: Record<string, (req: Request, res: Response) => void> = {
@@ -30,7 +30,7 @@ const productPhotoController: Record<string, (req: Request, res: Response) => vo
       for (const file of files) {
         photo.legend = file.fieldname;
         photo.image = file.buffer;
-        promisesProductPhoto.push(ProductPhoto.create(photo));
+        // promisesProductPhoto.push(ProductPhoto.create(photo));
       }
       const response = await Promise.all(promisesProductPhoto);
       if (!response) {
@@ -45,6 +45,19 @@ const productPhotoController: Record<string, (req: Request, res: Response) => vo
     try {
       const { id } = req.body;
       const response = await ProductPhoto.destroy({ where: { id: id } });
+      if (!response) {
+        res.status(404).send(response404('Product Photos'));
+      }
+      res.status(200).send(response200(response));
+    } catch (e) {
+      res.status(500).send(response500(String(e)));
+    }
+  },
+  test: async (req, res) => {
+    try {
+      const response = await DBConnection.getInstance().sync();
+      //Server Error: TypeError: Converting circular structure to JSON\n    --> starting at object with constructor 'Sequelize'\n    |     property 'dialect' -> object with constructor 'PostgresDialect'\n    --- property 'sequelize' closes the circle
+      // response.save()
       if (!response) {
         res.status(404).send(response404('Product Photos'));
       }
