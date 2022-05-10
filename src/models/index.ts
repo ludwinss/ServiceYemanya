@@ -3,6 +3,7 @@ import MakeSell from './MakeSell';
 import Owner from './Owner';
 import Product from './Product';
 import ProductPhoto from './ProductPhoto';
+import ReFill from './ReFill';
 import Stock from './Stock';
 import User from './User';
 
@@ -35,7 +36,11 @@ Stock.belongsTo(Product, {
 });
 
 //Relationships (N:M) MakeSell User Product
-User.belongsToMany(Product, { through: MakeSell, foreignKey: 'id_user' });
-Product.belongsToMany(User, { through: MakeSell, foreignKey: 'id_product' });
+User.belongsToMany(Product, { through: MakeSell, foreignKey: { name: 'id_user', allowNull: false } });
+Product.belongsToMany(User, { through: MakeSell, foreignKey: { name: 'id_product', allowNull: false } });
 
-export { DBConnection, MakeSell, Owner,Product, ProductPhoto, Stock, User };
+//Relationships (N:M) ReFill Owner Product
+Owner.belongsToMany(Product, { through: ReFill, foreignKey: { name: 'id_owner', allowNull: false } });
+Product.belongsToMany(Owner, { through: ReFill, foreignKey: { name: 'id_product', allowNull: false } });
+
+export { DBConnection, MakeSell, Owner, Product, ProductPhoto, Stock, User };

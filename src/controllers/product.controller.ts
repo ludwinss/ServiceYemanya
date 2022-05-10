@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 
-import { response200, response404, response500 } from '../constants/APIresponse';
+import { response200, response404, response500 } from '../interfaces/APIresponse';
+import { IProduct } from '../interfaces/IProduct';
 import { Product } from '../models';
-import { IProduct } from '../utils/interfaces/IProduct';
 
 const productController: Record<string, (req: Request, res: Response) => void> = {
   getAll: async (req, res) => {
@@ -31,11 +31,11 @@ const productController: Record<string, (req: Request, res: Response) => void> =
   addProductWithoutPhoto: async (req, res) => {
     try {
       const product: IProduct = req.body;
-      const response = await Product.create(product);
-      if (!response) {
-        res.status(404).send(response404('Product by ID'));
-      }
-      res.status(200).send(response200(response));
+      // const response = await Product.create(product);
+      // if (!response) {
+      //   res.status(404).send(response404('Product by ID'));
+      // }
+      // res.status(200).send(response200(response));
     } catch (e) {
       res.status(500).send(response500(String(e)));
     }
