@@ -22,8 +22,8 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare dni: string | null;
   declare email: string | null;
   declare address: string | null;
-  declare created_at: Date;
-  declare updated_at: Date;
+  declare created_at: CreationOptional<Date>;
+  declare updated_at: CreationOptional<Date>;
 
   //association makesell and user
   declare makeSells: NonAttribute<MakeSell[]>;
@@ -54,7 +54,16 @@ User.init(
   },
   {
     sequelize: DBConnection.getInstance(),
-    tableName: 'user'
+    tableName: 'user',
+    hooks: {
+      beforeCreate: (record, options) => {
+        record.created_at = new Date();
+        record.updated_at = new Date();
+      },
+      beforeUpdate: (record, options) => {
+        record.updated_at = new Date();
+      }
+    }
   }
 );
 

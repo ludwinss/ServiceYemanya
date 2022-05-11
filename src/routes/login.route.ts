@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
-import LoginController from '../controllers/login/login.controller';
-import { handleRequest } from '../middlewares/handleRequest';
+import LoginController from '../controllers/login/SignUp';
+import { ParseResponse } from '../middlewares/ParseResponse';
 
 const loginRoute = Router();
 

@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 
 import { response200, response404, response500 } from '../interfaces/APIresponse';
-import { IProductPhoto } from '../interfaces/IProductPhoto';
 import { DBConnection, MakeSell, Product, ProductPhoto, Stock, User } from '../models';
 
 const productPhotoController: Record<string, (req: Request, res: Response) => void> = {
@@ -23,20 +22,20 @@ const productPhotoController: Record<string, (req: Request, res: Response) => vo
   },
   createPhotoByProduct: async (req, res) => {
     try {
-      const photo: IProductPhoto = {} as IProductPhoto;
-      photo.id_product = req.body.id_product;
-      const files = req.files as Express.Multer.File[];
-      const promisesProductPhoto: Promise<any>[] = [];
-      for (const file of files) {
-        photo.legend = file.fieldname;
-        photo.image = file.buffer;
-        // promisesProductPhoto.push(ProductPhoto.create(photo));
-      }
-      const response = await Promise.all(promisesProductPhoto);
-      if (!response) {
-        res.status(404).send(response404('Product Photos Create'));
-      }
-      res.status(200).send(response200(response));
+      // const photo: IProductPhoto = {} as IProductPhoto;
+      // photo.id_product = req.body.id_product;
+      // const files = req.files as Express.Multer.File[];
+      // const promisesProductPhoto: Promise<any>[] = [];
+      // for (const file of files) {
+      //   photo.legend = file.fieldname;
+      //   photo.image = file.buffer;
+      //   // promisesProductPhoto.push(ProductPhoto.create(photo));
+      // }
+      // const response = await Promise.all(promisesProductPhoto);
+      // if (!response) {
+      //   res.status(404).send(response404('Product Photos Create'));
+      // }
+      // res.status(200).send(response200(response));
     } catch (e) {
       res.status(500).send(response500(String(e)));
     }
