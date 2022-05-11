@@ -1,9 +1,10 @@
 import { Router } from 'express';
 
-import controller from '../controllers/login.controller';
+import LoginController from '../controllers/login/login.controller';
+import { handleRequest } from '../middlewares/handleRequest';
 
 const loginRoute = Router();
 
-loginRoute.post('/login/signup', controller.signUp);
+loginRoute.post('/login/signup', (req, res) => new LoginController().run(req, res));
 
 export default loginRoute;
