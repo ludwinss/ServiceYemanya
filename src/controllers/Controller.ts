@@ -1,5 +1,18 @@
 import { NextFunction, Request, Response } from 'express';
 
-export interface Controller {
-  run: (req: Request, res: Response, next: NextFunction) => Promise<void>;
+interface IController {
+  run(send: object, event: string): void;
 }
+
+class buildController {
+  protected controller: IController;
+  constructor(controller?: IController) {
+    this.controller = controller!;
+  }
+
+  public setController(controller: IController) {
+    this.controller = controller;
+  }
+}
+export default buildController;
+export { IController };

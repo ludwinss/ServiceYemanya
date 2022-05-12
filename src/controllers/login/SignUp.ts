@@ -1,28 +1,21 @@
-import { NextFunction, Request, Response } from 'express';
-
-import { IUser } from '../../interfaces/ILogin';
-import { GenerateToken } from '../../middlewares/GenerateToken';
+import { CREATE, CREATE_ERROR } from '../../constants/Login.constants';
+import { IUser } from '../../interfaces/IUser';
 import { User } from '../../models';
-import HttpReponse from '../../utils/HttpResponse';
-import { ParseBody } from '../../utils/ParseBody';
-import { Controller } from '../Controller';
+import BuildController from '../Controller';
 
-class SignUp implements Controller {
-  async run(req: Request, res: Response) {
+class SignUp extends BuildController {
+  private _user: IUser;
+  constructor(user: IUser) {
+    super();
+    this._user = user;
+  }
+  async start() {
     try {
-      const newUser: IUser = ParseBody.getParseJSON<IUser>(req.body);
-      const responseDB = await User.create(newUser);
-
-      if (!responseDB) res.status(400).send(HttpReponse.fail());
-
-      const { id } = responseDB;
-      const token = new GenerateToken(id, 'user').sign();
-
-      res.status(201).send(HttpReponse.ok(token));
-    } catch (e) {
-      res.status(500).send(HttpReponse.mistake(String(e)));
+      const newUser = await User.create(this._user);
+      this.controller.run(newUser.id, CREATE);
+    } catch (e: any) {
+      this.controller.run(e, CREATE_ERROR);
     }
   }
 }
-
 export default SignUp;

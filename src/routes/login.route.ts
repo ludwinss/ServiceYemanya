@@ -1,10 +1,10 @@
 import { Router } from 'express';
 
-import LoginController from '../controllers/login/SignUp';
-import { ParseResponse } from '../middlewares/ParseResponse';
+import BuildLogin from '../controllers/login';
 
 const loginRoute = Router();
 
-loginRoute.post('/login/signup', (req, res) => new LoginController().run(req, res));
+loginRoute.post('/login/signup', (req, res) => new BuildLogin(req, res).madeSignUp());
+loginRoute.post('/login/signin', (req, res) => new BuildLogin(req, res).madeSignIn());
 
 export default loginRoute;

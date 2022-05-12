@@ -4,4 +4,4 @@ class ParseBody<T> {
   }
 }
 
-export { ParseBody };
+export default ParseBody;
