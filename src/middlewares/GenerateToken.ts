@@ -1,24 +1,28 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
+import { IGenerateToken } from '../interfaces/IGenerateToken';
+
 const mySecret = 'AH';
 
-class GenerateToken<T> {
+class GenerateToken implements IGenerateToken {
   private _payload: JwtPayload;
-  constructor(id_user: T) {
+  constructor() {
     this._payload = {
       exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
-      id_user: id_user,
       rol: 'user'
     };
   }
-  set rol(newRol: 'user' | 'admin') {
-    this._payload.rol = newRol;
+  public set payload(id_user:string){
+    this._payload.sub=id_user;
   }
-  sign() {
+  public set rol(rol:'user'|'admin'){
+    this._payload.rol=rol;
+  }
+  public sign() {
     return jwt.sign(this._payload, mySecret, { algorithm: 'HS256' });
   }
-  static veryfied(token: string) {
-    jwt.verify(token, mySecret);
+  public verified(token: string) {
+    return jwt.verify(token, mySecret);
   }
 }
 

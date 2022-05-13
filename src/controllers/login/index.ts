@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { CREATE, CREATE_ERROR, VERIFY } from '../../constants/Login.constants';
+import { CREATE_ERROR, CREATE_NULL, CREATE_OK, VERIFY_ERROR, VERIFY_NULL, VERIFY_OK } from '../../constants/Login.constants';
 import User from '../../interfaces/IUser';
 import GenerateToken from '../../middlewares/GenerateToken';
 import HttpResponse from '../../utils/HttpResponse';
@@ -18,33 +18,31 @@ class buildLogin implements IController {
   }
 
   madeSignIn() {
-    const _signIn = new SignIn(this._user.getLogin());
+    const _signIn = new SignIn(this._user.getLogin(), new GenerateToken());
     _signIn.setController(this);
     _signIn.start();
   }
 
   madeSignUp() {
-    const _signUp = new SignUp(this._user.getUser());
+    const _signUp = new SignUp(this._user.getUser(),new GenerateToken());
     _signUp.setController(this);
     _signUp.start();
   }
 
-  run(send: any, event: string) {
-    console.log(event);
+  run(send: object, event: string) {
+    console.log(event,send);
     switch (event) {
-      case CREATE:
-        this._res.status(201).send(HttpResponse.ok(this.instanceToken(send)));
+      case  VERIFY_OK||CREATE_OK :
+        console.log(event,send);
+        this._res.status(201).send(HttpResponse.ok(send));
         break;
-      case CREATE_ERROR:
+      case CREATE_ERROR || VERIFY_ERROR:
         this._res.status(400).send(HttpResponse.mistake(JSON.stringify(send)));
         break;
-      case VERIFY:
-        this._res.status(200).send(HttpResponse.ok({ user: send, token: this.instanceToken(send.id) }));
+      case VERIFY_NULL ||CREATE_NULL:
+        this._res.status(200).send(HttpResponse.fail());
+        break;
     }
-  }
-
-  private instanceToken<T>(payload: T) {
-    return new GenerateToken(payload).sign();
   }
 }
 

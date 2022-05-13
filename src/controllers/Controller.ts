@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 
 interface IController {
-  run(send: object, event: string): void;
+  run(send: object, event: string): any;
 }
 
 class buildController {
