@@ -2,9 +2,9 @@ import { Router } from 'express';
 
 import BuildLogin from '../controllers/login';
 
-const loginRoute = Router();
+function buildLoginRoute(route: Router) {
+  route.post('/login/signup', (req, res) => new BuildLogin(req, res).madeSignUp());
+  route.post('/login/signin', (req, res) => new BuildLogin(req, res).madeSignIn());
+}
 
-loginRoute.post('/login/signup', (req, res) => new BuildLogin(req, res).madeSignUp());
-loginRoute.post('/login/signin', (req, res) => new BuildLogin(req, res).madeSignIn());
-
-export default loginRoute;
+export default buildLoginRoute;

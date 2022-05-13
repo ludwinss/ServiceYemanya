@@ -12,11 +12,11 @@ class GenerateToken implements IGenerateToken {
       rol: 'user'
     };
   }
-  public set payload(id_user:string){
-    this._payload.sub=id_user;
+  public set payload(id_user: string) {
+    this._payload.sub = id_user;
   }
-  public set rol(rol:'user'|'admin'){
-    this._payload.rol=rol;
+  public set rol(rol: 'user' | 'admin') {
+    this._payload.rol = rol;
   }
   public sign() {
     return jwt.sign(this._payload, mySecret, { algorithm: 'HS256' });

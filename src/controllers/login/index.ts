@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { CREATE_ERROR, CREATE_NULL, CREATE_OK, VERIFY_ERROR, VERIFY_NULL, VERIFY_OK } from '../../constants/Login.constants';
+import { EVENT_ERROR, EVENT_NULL, EVENT_OK } from '../../constants/Login.constants';
 import User from '../../interfaces/IUser';
 import GenerateToken from '../../middlewares/GenerateToken';
 import HttpResponse from '../../utils/HttpResponse';
@@ -17,29 +17,27 @@ class buildLogin implements IController {
     this._res = res;
   }
 
-  madeSignIn() {
+  async madeSignIn() {
     const _signIn = new SignIn(this._user.getLogin(), new GenerateToken());
     _signIn.setController(this);
-    _signIn.start();
+    await _signIn.start();
   }
 
-  madeSignUp() {
-    const _signUp = new SignUp(this._user.getUser(),new GenerateToken());
+  async madeSignUp() {
+    const _signUp = new SignUp(this._user.getUser(), new GenerateToken());
     _signUp.setController(this);
-    _signUp.start();
+    await _signUp.start();
   }
 
   run(send: object, event: string) {
-    console.log(event,send);
     switch (event) {
-      case  VERIFY_OK||CREATE_OK :
-        console.log(event,send);
+      case EVENT_OK:
         this._res.status(201).send(HttpResponse.ok(send));
         break;
-      case CREATE_ERROR || VERIFY_ERROR:
+      case EVENT_ERROR:
         this._res.status(400).send(HttpResponse.mistake(JSON.stringify(send)));
         break;
-      case VERIFY_NULL ||CREATE_NULL:
+      case EVENT_NULL:
         this._res.status(200).send(HttpResponse.fail());
         break;
     }

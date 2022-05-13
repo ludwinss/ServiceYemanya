@@ -1,4 +1,4 @@
-import { VERIFY_ERROR, VERIFY_NULL, VERIFY_OK } from '../../constants/Login.constants';
+import { EVENT_ERROR, EVENT_NULL, EVENT_OK } from '../../constants/Login.constants';
 import { IGenerateToken } from '../../interfaces/IGenerateToken';
 import { ILogin } from '../../interfaces/IUser';
 import { User } from '../../models';
@@ -16,31 +16,27 @@ class SignIn extends BuildController {
 
   async start() {
     try {
-      let foundUser = {} as User | null;
+      let foundUser = null;
+      if (this._login.login) {
+        foundUser = await this.loginByUser();
+      }
       if (this._login.phone) {
         foundUser = await this.loginByPhone();
-        if (foundUser) {
-          this._generateToken.payload=String( foundUser.id );
-          const newToken = this._generateToken.sign();
-          return this.controller.run({user:foundUser,token:newToken}, VERIFY_OK);
-        }
-      }else{
-        foundUser = await this.loginByUser();
-        if (foundUser) {
-          this._generateToken.payload=String( foundUser.id );
-          const newToken = this._generateToken.sign();
-          return this.controller.run({user:foundUser,token:newToken}, VERIFY_OK);
-        }
       }
 
-      return this.controller.run({}, VERIFY_NULL);
+      if (!foundUser) {
+        return this.controller.run({}, EVENT_NULL);
+      }
+
+      this._generateToken.payload = String(foundUser.id);
+      const newToken = this._generateToken.sign();
+      return this.controller.run({ user: foundUser, token: newToken }, EVENT_OK);
     } catch (e: any) {
-      this.controller.run(e, VERIFY_ERROR);
+      return this.controller.run(e, EVENT_ERROR);
     }
   }
 
   async loginByPhone() {
-    try{
     const foundUserByPhone = await User.findOne({
       where: {
         phone: this._login.phone,
@@ -51,13 +47,9 @@ class SignIn extends BuildController {
       }
     });
     return foundUserByPhone;
-    }catch(e:any){
-      throw new Error(e)
-    }
   }
 
   async loginByUser() {
-    try {
     const foundUserByUser = await User.findOne({
       where: {
         login: this._login.login,
@@ -68,11 +60,6 @@ class SignIn extends BuildController {
       }
     });
     return foundUserByUser;
-
-    } catch (e:any) {
-      throw new Error(e)
-
-    }
   }
 }
 
