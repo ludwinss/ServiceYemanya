@@ -6,7 +6,7 @@ class HttpReponse {
     return { success: false, message: `Something wrong with your request` };
   }
   static mistake(message: string) {
-    return { success: false, message: `Error: ${message}` };
+    return { success: false, message: `${message}` };
   }
 }
 

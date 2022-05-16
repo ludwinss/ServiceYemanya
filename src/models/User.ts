@@ -5,11 +5,13 @@ import {
   InferAttributes,
   InferCreationAttributes,
   Model,
-  NonAttribute
+  NonAttribute,
+  Op
 } from 'sequelize';
 
 import DBConnection from './DBConnection';
 import MakeSell from './MakeSell';
+import Owner from './Owner';
 
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare id: CreationOptional<bigint>;
@@ -44,7 +46,7 @@ User.init(
     last_name: { type: DataTypes.STRING, allowNull: false },
     nickname: DataTypes.STRING(63),
     phone: { type: DataTypes.STRING, allowNull: false, unique: true },
-    login: { type: DataTypes.STRING(15), allowNull: false },
+    login: { type: DataTypes.STRING(15), allowNull: false, unique: true },
     pwd: { type: DataTypes.STRING(63, true), allowNull: false },
     dni: DataTypes.STRING(63),
     email: DataTypes.STRING(63),
@@ -55,11 +57,14 @@ User.init(
   {
     sequelize: DBConnection.getInstance(),
     tableName: 'user',
-    timestamps: false,
     hooks: {
-      beforeCreate: (record, options) => {
+      beforeCreate: async (record, options) => {
         record.created_at = new Date();
         record.updated_at = new Date();
+        const findFields = await Owner.findOne({
+          where: { [Op.or]: [{ login: record.login }, { phone: record.phone }] }
+        });
+        if (findFields) return Promise.reject('Error: Fields Duplicates');
       },
       beforeUpdate: (record, options) => {
         record.updated_at = new Date();

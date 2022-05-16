@@ -2,15 +2,15 @@ import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, 
 
 import DBConnection from './DBConnection';
 
-class Owner extends Model<InferAttributes<Model>, InferCreationAttributes<Model>> {
+class Owner extends Model<InferAttributes<Owner>, InferCreationAttributes<Owner>> {
   declare id: CreationOptional<bigint>;
-  declare name: string;
-  declare last_name: string;
+  declare fullname: string;
+  // declare last_name: string;
   declare nickname: string | null;
   declare phone: string;
   declare login: string;
   declare pwd: string;
-  declare dni: string | null;
+  // declare dni: string | null;
   declare email: string | null;
   declare created_at: Date;
   declare updated_at: Date;
@@ -24,21 +24,20 @@ Owner.init(
       primaryKey: true,
       autoIncrement: true
     },
-    name: { type: DataTypes.STRING, allowNull: false },
-    last_name: { type: DataTypes.STRING, allowNull: false },
+    fullname: { type: DataTypes.STRING, allowNull: false },
+    // last_name: { type: DataTypes.STRING, allowNull: false },
     nickname: DataTypes.STRING(63),
-    phone: { type: DataTypes.STRING, allowNull: false },
-    login: { type: DataTypes.STRING(15), allowNull: false },
+    phone: { type: DataTypes.STRING, allowNull: false, unique: true },
+    login: { type: DataTypes.STRING(15), allowNull: false, unique: true },
     pwd: { type: DataTypes.STRING(63, true), allowNull: false },
-    dni: DataTypes.STRING(63),
+    // dni: DataTypes.STRING(63),
     email: DataTypes.STRING(63),
     created_at: { type: DataTypes.DATE, allowNull: false },
     updated_at: { type: DataTypes.DATE, allowNull: false }
   },
   {
     sequelize: DBConnection.getInstance(),
-    tableName: 'owner',
-    timestamps: true
+    tableName: 'owner'
   }
 );
 
