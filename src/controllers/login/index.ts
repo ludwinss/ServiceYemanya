@@ -9,6 +9,7 @@ import HttpResponse from '../../utils/HttpResponse';
 import { IController } from '../Controller';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
+import SignUpAdmin from './SignUpAdmin';
 
 class buildLogin implements IController {
   private _res: Response;
@@ -36,6 +37,15 @@ class buildLogin implements IController {
       const _signUp = new SignUp(new User(this._req.body, this.encryptor).getUser(), new GenerateToken());
       _signUp.setController(this);
       await _signUp.start();
+    } catch (error: any) {
+      this.run(error, EVENT_ERROR);
+    }
+  }
+  async madeSignUpAdmin() {
+    try {
+      const _signUpAdmin = new SignUpAdmin(new User(this._req.body, this.encryptor).getUser(), new GenerateToken());
+      _signUpAdmin.setController(this);
+      await _signUpAdmin.start();
     } catch (error: any) {
       this.run(error, EVENT_ERROR);
     }

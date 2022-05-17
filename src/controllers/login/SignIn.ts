@@ -1,8 +1,12 @@
 import { EVENT_ERROR, EVENT_NULL, EVENT_OK } from '../../constants/Login.constants';
 import { IGenerateToken } from '../../interfaces/IGenerateToken';
 import { ILogin } from '../../interfaces/IUser';
-import { DBConnection, User } from '../../models';
+import { DBConnection, Owner, User } from '../../models';
 import BuildController from '../Controller';
+
+interface roles {
+  rol: 'admin' | 'user';
+}
 
 class SignIn extends BuildController {
   private _login: ILogin;
@@ -15,24 +19,17 @@ class SignIn extends BuildController {
   }
 
   async start() {
-    2;
     try {
-      let foundUser: any = null;
-      if (this._login.login) {
-        foundUser = await this.loginByUser();
-      }
+      const foundUser = await this.loginByUser();
 
       if (!foundUser) {
         return this.controller.run({}, EVENT_NULL);
       }
 
-      console.log(foundUser[0][0].rol);
-      foundUser = foundUser[0][0];
-
       this._generateToken.payload = String(foundUser.id);
       this._generateToken.rol = foundUser.rol;
       const newToken = this._generateToken.sign();
-      return this.controller.run({ user: foundUser[0][0], token: newToken }, EVENT_OK);
+      return this.controller.run({ user: foundUser, token: newToken }, EVENT_OK);
     } catch (e: any) {
       return this.controller.run(e, EVENT_ERROR);
     }
@@ -51,22 +48,35 @@ class SignIn extends BuildController {
   //   return foundUserByPhone;
   // }
 
-  async loginByUser() {
-    const foundUserByUser = await DBConnection.getInstance().query(
-      `
-    SELECT *  FROM (SELECT id, name, login ,phone  ,email ,'user' as rol,pwd FROM "user"
-    UNION ALL
-    SELECT id,fullname,login,phone,email ,'admin' as rol ,pwd FROM "owner") as tmp
-    where tmp.login=:login and tmp.pwd=:pwd
-    `,
-      {
-        replacements: {
+  async loginByUser(): Promise<(Owner & roles) | (User & roles) | null> {
+    let foundOwnerByUser: Owner | null = null;
+    const foundUserByUser = await User.findOne({
+      where: {
+        login: this._login.login,
+        pwd: this._login.pwd
+      },
+      attributes: {
+        exclude: ['login', 'pwd']
+      }
+    });
+
+    if (!foundUserByUser) {
+      foundOwnerByUser = await Owner.findOne({
+        where: {
           login: this._login.login,
           pwd: this._login.pwd
+        },
+        attributes: {
+          exclude: ['login', 'pwd']
         }
-      }
-    );
-    return foundUserByUser;
+      });
+    }
+
+    if (foundUserByUser) return Object.assign(foundUserByUser, { rol: 'user' } as roles);
+
+    if (foundOwnerByUser) return Object.assign(foundOwnerByUser, { rol: 'admin' } as roles);
+
+    return null;
   }
 }
 

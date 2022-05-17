@@ -71,7 +71,6 @@ class User {
         }
       }
     }
-    console.log(this._login, this._kLogin);
     const tmpFieldErrors = this._kLogin.filter((key) => this._login[key] === String());
     if (tmpFieldErrors.length > 0) {
       throw new Error(`A field is missing ${tmpFieldErrors.join(', ').toLocaleUpperCase()}`);
