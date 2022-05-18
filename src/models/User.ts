@@ -48,8 +48,8 @@ User.init(
     phone: { type: DataTypes.STRING, allowNull: false, unique: true },
     login: { type: DataTypes.STRING(15), allowNull: false, unique: true },
     pwd: { type: DataTypes.STRING(63, true), allowNull: false },
-    dni: DataTypes.STRING(63),
-    email: DataTypes.STRING(63),
+    dni: { type: DataTypes.STRING(63), unique: true },
+    email: { type: DataTypes.STRING(63), unique: true },
     created_at: DataTypes.DATE,
     updated_at: DataTypes.DATE,
     address: DataTypes.STRING
@@ -62,7 +62,7 @@ User.init(
         record.created_at = new Date();
         record.updated_at = new Date();
         const findFields = await Owner.findOne({
-          where: { [Op.or]: [{ login: record.login }, { phone: record.phone }] }
+          where: { [Op.or]: [{ login: record.login }, { phone: record.phone }, { email: record.email }] }
         });
         if (findFields) return Promise.reject('Error: Fields Duplicates');
       },

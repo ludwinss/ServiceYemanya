@@ -1,6 +1,6 @@
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import jwt, { JwtPayload, VerifyErrors } from 'jsonwebtoken';
 
-import { IGenerateToken } from '../interfaces/IGenerateToken';
+import { IGenerateToken, JwtPayloadExtends, roles } from '../interfaces/IGenerateToken';
 
 const mySecret = 'AH';
 
@@ -21,8 +21,15 @@ class GenerateToken implements IGenerateToken {
   public sign() {
     return jwt.sign(this._payload, mySecret, { algorithm: 'HS256' });
   }
-  public verified(token: string) {
-    return jwt.verify(token, mySecret);
+  public verified(token: string): Promise<JwtPayloadExtends | undefined | null> {
+    return new Promise((resolve, reject) => {
+      jwt.verify(token, mySecret, (err, payload) => {
+        if (err) {
+          return reject(err);
+        }
+        resolve(payload as JwtPayloadExtends);
+      });
+    });
   }
 }
 

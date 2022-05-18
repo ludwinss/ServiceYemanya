@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
 
-import { EVENT_ERROR, EVENT_NULL, EVENT_OK } from '../../constants/Login.constants';
+import { EVENT_ERROR, EVENT_NULL, EVENT_OK } from '../../constants/Event.constants';
 import { IEncryptData } from '../../interfaces/IEncryptData';
 import User from '../../interfaces/IUser';
-import EncryptData from '../../middlewares/EncryptData';
-import GenerateToken from '../../middlewares/GenerateToken';
+import EncryptData from '../../utils/EncryptData';
+import GenerateToken from '../../utils/GenerateToken';
 import HttpResponse from '../../utils/HttpResponse';
 import { IController } from '../Controller';
 import SignIn from './SignIn';

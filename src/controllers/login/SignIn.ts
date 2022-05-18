@@ -1,7 +1,7 @@
-import { EVENT_ERROR, EVENT_NULL, EVENT_OK } from '../../constants/Login.constants';
+import { EVENT_ERROR, EVENT_NULL, EVENT_OK } from '../../constants/Event.constants';
 import { IGenerateToken } from '../../interfaces/IGenerateToken';
 import { ILogin } from '../../interfaces/IUser';
-import { DBConnection, Owner, User } from '../../models';
+import { Owner, User } from '../../models';
 import BuildController from '../Controller';
 
 interface roles {

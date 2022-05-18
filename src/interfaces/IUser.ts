@@ -9,7 +9,7 @@ export interface IUser extends ILogin {
   name: string;
   phone: string;
   last_name: string | null;
-  nick_name: string | null;
+  nickname: string | null;
   dni: string | null;
   email: string | null;
   address: string | null;
@@ -104,7 +104,7 @@ class User {
       name: String(),
       phone: String(),
       last_name: null,
-      nick_name: null,
+      nickname: null,
       dni: null,
       email: null,
       address: null,
