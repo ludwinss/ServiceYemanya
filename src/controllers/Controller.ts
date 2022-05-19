@@ -4,7 +4,7 @@ interface IController {
   run(send: object, event: string): any;
 }
 
-class buildController {
+class BuildController {
   protected controller: IController;
   constructor(controller?: IController) {
     this.controller = controller!;
@@ -14,5 +14,5 @@ class buildController {
     this.controller = controller;
   }
 }
-export default buildController;
+export default BuildController;
 export { IController };

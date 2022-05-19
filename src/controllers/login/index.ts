@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 
 import { EVENT_ERROR, EVENT_NULL, EVENT_OK } from '../../constants/Event.constants';
 import { IEncryptData } from '../../interfaces/IEncryptData';
-import User from '../../interfaces/IUser';
 import EncryptData from '../../utils/EncryptData';
 import GenerateToken from '../../utils/GenerateToken';
 import HttpResponse from '../../utils/HttpResponse';
@@ -10,8 +9,9 @@ import { IController } from '../Controller';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
 import SignUpAdmin from './SignUpAdmin';
+import UserController from './UserController';
 
-class buildLogin implements IController {
+class BuildLogin implements IController {
   private _res: Response;
   private _req: Request;
   private encryptor: IEncryptData;
@@ -24,7 +24,7 @@ class buildLogin implements IController {
 
   async madeSignIn() {
     try {
-      const _signIn = new SignIn(new User(this._req.body, this.encryptor).getLogin(), new GenerateToken());
+      const _signIn = new SignIn(new UserController(this._req, this.encryptor).getLogin(), new GenerateToken());
       _signIn.setController(this);
       await _signIn.start();
     } catch (error: any) {
@@ -34,7 +34,7 @@ class buildLogin implements IController {
 
   async madeSignUp() {
     try {
-      const _signUp = new SignUp(new User(this._req.body, this.encryptor).getUser(), new GenerateToken());
+      const _signUp = new SignUp(new UserController(this._req, this.encryptor).getUser(), new GenerateToken());
       _signUp.setController(this);
       await _signUp.start();
     } catch (error: any) {
@@ -43,7 +43,10 @@ class buildLogin implements IController {
   }
   async madeSignUpAdmin() {
     try {
-      const _signUpAdmin = new SignUpAdmin(new User(this._req.body, this.encryptor).getUser(), new GenerateToken());
+      const _signUpAdmin = new SignUpAdmin(
+        new UserController(this._req, this.encryptor).getUser(),
+        new GenerateToken()
+      );
       _signUpAdmin.setController(this);
       await _signUpAdmin.start();
     } catch (error: any) {
@@ -66,4 +69,4 @@ class buildLogin implements IController {
   }
 }
 
-export default buildLogin;
+export default BuildLogin;

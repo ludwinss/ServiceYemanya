@@ -19,8 +19,8 @@ class Product extends Model<InferAttributes<Product>, InferCreationAttributes<Pr
   declare description: string | null;
   declare category: string | null;
   declare type: string | null;
-  declare created_at: Date;
-  declare updated_at: Date;
+  declare created_at: CreationOptional<Date>;
+  declare updated_at: CreationOptional<Date>;
 
   //Product(1:1)Stock
   declare stock: NonAttribute<Stock>;
@@ -64,7 +64,17 @@ Product.init(
   },
   {
     sequelize: DBConnection.getInstance(),
-    tableName: 'product'
+    tableName: 'product',
+    hooks: {
+      beforeCreate: (record, options) => {
+        record.created_at = new Date();
+        record.updated_at = new Date();
+      },
+      beforeUpdate: (record, options) => {
+        console.log('entri oir aca');
+        record.updated_at = new Date();
+      }
+    }
   }
 );
 

@@ -16,8 +16,8 @@ class ProductPhoto extends Model<InferAttributes<ProductPhoto>, InferCreationAtt
   declare id: CreationOptional<bigint>;
   declare image: bigint;
   declare legend: string;
-  declare created_at: Date;
-  declare updated_at: Date;
+  declare created_at: CreationOptional<Date>;
+  declare updated_at: CreationOptional<Date>;
 
   //Product(1:M)ProductPhoto
   declare id_product: ForeignKey<Product['id']>;
@@ -45,7 +45,16 @@ ProductPhoto.init(
   },
   {
     sequelize: DBConnection.getInstance(),
-    tableName: 'product_photo'
+    tableName: 'product_photo',
+    hooks: {
+      beforeCreate: async (record, options) => {
+        record.created_at = new Date();
+        record.updated_at = new Date();
+      },
+      beforeUpdate: (record, options) => {
+        record.updated_at = new Date();
+      }
+    }
   }
 );
 

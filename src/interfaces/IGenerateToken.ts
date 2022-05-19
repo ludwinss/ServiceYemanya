@@ -1,10 +1,10 @@
 import { JwtPayload } from 'jsonwebtoken';
 
-export interface JwtPayloadExtends extends JwtPayload {
+interface JwtPayloadExtends extends JwtPayload {
   rol: roles;
 }
 
-export type roles = 'user' | 'admin';
+type roles = 'user' | 'admin';
 
 interface IGenerateToken {
   sign(): string;
@@ -13,4 +13,4 @@ interface IGenerateToken {
   rol: roles;
 }
 
-export { IGenerateToken };
+export { IGenerateToken, JwtPayloadExtends, roles };

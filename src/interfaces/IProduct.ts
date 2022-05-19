@@ -1,6 +1,6 @@
 export interface IProduct {
   name: string;
-  description?: string;
-  category?: string;
-  type?: string;
+  description: string | null;
+  category: string | null;
+  type: string | null;
 }

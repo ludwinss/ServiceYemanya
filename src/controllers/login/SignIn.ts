@@ -1,12 +1,8 @@
 import { EVENT_ERROR, EVENT_NULL, EVENT_OK } from '../../constants/Event.constants';
-import { IGenerateToken } from '../../interfaces/IGenerateToken';
+import { IGenerateToken, roles } from '../../interfaces/IGenerateToken';
 import { ILogin } from '../../interfaces/IUser';
 import { Owner, User } from '../../models';
 import BuildController from '../Controller';
-
-interface roles {
-  rol: 'admin' | 'user';
-}
 
 class SignIn extends BuildController {
   private _login: ILogin;
@@ -48,7 +44,7 @@ class SignIn extends BuildController {
   //   return foundUserByPhone;
   // }
 
-  async loginByUser(): Promise<(Owner & roles) | (User & roles) | null> {
+  async loginByUser(): Promise<(Owner & { rol: roles }) | (User & { rol: roles }) | null> {
     let foundOwnerByUser: Owner | null = null;
     const foundUserByUser = await User.findOne({
       where: {
@@ -72,9 +68,9 @@ class SignIn extends BuildController {
       });
     }
 
-    if (foundUserByUser) return Object.assign(foundUserByUser, { rol: 'user' } as roles);
+    if (foundUserByUser) return Object.assign(foundUserByUser, { rol: 'user' as roles });
 
-    if (foundOwnerByUser) return Object.assign(foundOwnerByUser, { rol: 'admin' } as roles);
+    if (foundOwnerByUser) return Object.assign(foundOwnerByUser, { rol: 'admin' as roles });
 
     return null;
   }
