@@ -16,8 +16,8 @@ class Stock extends Model<InferAttributes<Stock>, InferCreationAttributes<Stock>
   declare id: CreationOptional<bigint>;
   declare total: number;
   declare price: number;
-  declare created_at: Date;
-  declare updated_at: Date;
+  declare created_at: CreationOptional<Date>;
+  declare updated_at: CreationOptional<Date>;
 
   //foreignKeys
   declare id_product: ForeignKey<Product['id']>;

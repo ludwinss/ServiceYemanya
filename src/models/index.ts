@@ -43,4 +43,4 @@ Product.belongsToMany(User, { through: MakeSell, foreignKey: { name: 'id_product
 Owner.belongsToMany(Product, { through: ReFill, foreignKey: { name: 'id_owner', allowNull: false } });
 Product.belongsToMany(Owner, { through: ReFill, foreignKey: { name: 'id_product', allowNull: false } });
 
-export { DBConnection, MakeSell, Owner, Product, ProductPhoto, Stock, User };
+export { DBConnection, MakeSell, Owner, Product, ProductPhoto, ReFill, Stock, User };

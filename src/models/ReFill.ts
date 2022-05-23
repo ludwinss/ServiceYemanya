@@ -15,8 +15,7 @@ import Product from './Product';
 class ReFill extends Model<InferAttributes<ReFill>, InferCreationAttributes<ReFill>> {
   declare id: CreationOptional<bigint>;
   declare amount: number;
-  declare created_at: Date;
-  declare updated_at: Date;
+  declare created_at: CreationOptional<Date>;
 
   //association User(N:M)MakeSell  and  User(N:M)Product
   declare id_owner: ForeignKey<Owner['id']>;
@@ -35,12 +34,16 @@ ReFill.init(
       autoIncrement: true
     },
     amount: { type: DataTypes.INTEGER, allowNull: false },
-    created_at: DataTypes.DATE,
-    updated_at: DataTypes.DATE
+    created_at: DataTypes.DATE
   },
   {
     sequelize: DBConnection.getInstance(),
-    tableName: 'refill'
+    tableName: 'refill',
+    hooks: {
+      beforeCreate: (instance) => {
+        instance.created_at = new Date();
+      }
+    }
   }
 );
 
