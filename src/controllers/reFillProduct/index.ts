@@ -1,30 +1,33 @@
-import { EVENT_ERROR, EVENT_NULL, EVENT_OK } from '../../constants/Event.constants';
 import { IReFill } from '../../interfaces/IReFill';
-import { IController } from '../Controller';
+import ProductHandler from '../MainProductController';
 import ReFillController from './ReFillController';
 
-class BuilReFillProduct implements IController {
+class BuilReFillProduct extends ProductHandler {
   private readonly _refillProduct;
   constructor(refillProduct: IReFill) {
+    super();
     this._refillProduct = refillProduct;
   }
-  madeNewProduct() {
+  private async addRegister() {
     try {
-      const newRefill = new ReFillController(this._refillProduct);
-      newRefill.setController(this);
-      newRefill.addNewProduct();
+      return await new ReFillController(this._refillProduct).createReFill();
     } catch (error) {
-      return this.run(error as object, EVENT_ERROR);
+      console.log(error);
+      return {};
     }
   }
-  run(send: object, event: string) {
+  public async handle(request: any) {
+    const { event } = request;
+    const data = await this.handleEvent(event);
+    return super.handle({ event: 'CREATE', data });
+  }
+
+  async handleEvent(event: string) {
     switch (event) {
-      case EVENT_OK:
-        break;
-      case EVENT_NULL:
-        break;
-      case EVENT_ERROR:
-        break;
+      case 'CREATE':
+        return await this.addRegister();
+      default:
+        return {};
     }
   }
 }

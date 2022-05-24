@@ -1,6 +1,6 @@
 import { Request } from 'express';
 
-import { EVENT_ERROR, EVENT_NULL, EVENT_OK } from '../../constants/Event.constants';
+import { EVENT_ERROR, EVENT_NULL, EVENT_OK } from '../../constants/response-events.constants';
 import { IProductPhoto } from '../../interfaces/IProductPhoto';
 import { ProductPhoto } from '../../models';
 import ParseBody from '../../utils/ParseBody';

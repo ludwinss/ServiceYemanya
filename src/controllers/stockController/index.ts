@@ -1,30 +1,37 @@
 import { EVENT_ERROR, EVENT_NULL, EVENT_OK } from '../../constants/Event.constants';
 import { IStock } from '../../interfaces/IStock';
+import ParseBody from '../../utils/ParseBody';
 import { IController } from '../Controller';
+import ProductHandler from '../MainProductController';
 import StockController from './StockController';
 
-class BuildStock implements IController {
+class BuildStock extends ProductHandler {
   private readonly _stock: IStock;
   constructor(stock: IStock) {
+    super();
     this._stock = stock;
   }
-  addNewStock() {
+  private async addNewStock() {
     try {
-      const newStock = new StockController(this._stock);
-      newStock.setController(this);
-      newStock.createStock();
+      return await new StockController(this._stock).createStock();
     } catch (error) {
-      return this.run(error as object, EVENT_ERROR);
+      console.log(error);
+      return {};
     }
   }
-  run(send: object, event: string) {
+  public async handle(request: any) {
+    const { event } = request;
+    const data = await this.handleEvent(event);
+    return super.handle({ event: 'CREATE', data });
+  }
+  async handleEvent(event: string) {
     switch (event) {
-      case EVENT_OK:
-        break;
-      case EVENT_NULL:
-        break;
-      case EVENT_ERROR:
-        break;
+      case 'CREATE':
+        return await this.addNewStock();
+      default:
+        return {};
     }
   }
 }
+
+export default BuildStock;

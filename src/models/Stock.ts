@@ -40,7 +40,19 @@ Stock.init(
     created_at: DataTypes.DATE,
     updated_at: DataTypes.DATE
   },
-  { sequelize: DBConnection.getInstance(), tableName: 'stock' }
+  {
+    sequelize: DBConnection.getInstance(),
+    tableName: 'stock',
+    hooks: {
+      beforeCreate: (instance) => {
+        instance.created_at = new Date();
+        instance.updated_at = new Date();
+      },
+      beforeUpdate: (instance) => {
+        instance.updated_at = new Date();
+      }
+    }
+  }
 );
 
 export default Stock;
