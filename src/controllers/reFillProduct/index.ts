@@ -4,7 +4,7 @@ import ProductHandler from '../MainProductController';
 import ReFillController from './ReFillController';
 
 class BuilReFillProduct extends ProductHandler {
-  private async addRegister(reFillInstance:IReFill) {
+  private async addRegister(reFillInstance: IReFill) {
     try {
       return await new ReFillController(reFillInstance).createReFill();
     } catch (error) {
@@ -17,21 +17,21 @@ class BuilReFillProduct extends ProductHandler {
     return super.handle({ event: 'CREATE', data });
   }
 
-  async handleEvent(data:any) {
-    const {event}=data;
+  async handleEvent(data: any) {
+    const { event } = data;
     switch (event) {
       case 'CREATE':
-        return await this.addRegister(new ParseBody<IReFill>(data.data,this._resetReFillProduct()).parseBody());
+        return await this.addRegister(new ParseBody<IReFill>(data.data, this._resetReFillProduct()).parseBody());
       default:
         return {};
     }
   }
-  private _resetReFillProduct():IReFill{
+  private _resetReFillProduct(): IReFill {
     return {
-      amount:Number(),
-      id_owner:Number() as any,
-      id_product:Number() as any
-    }
+      amount: Number(),
+      id_owner: Number() as any,
+      id_product: Number() as any
+    };
   }
 }
 

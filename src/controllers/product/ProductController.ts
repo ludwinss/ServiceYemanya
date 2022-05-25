@@ -4,8 +4,8 @@ import { Product } from '../../models';
 class ProductController {
   private _product: IProduct;
 
-  constructor(product:IProduct) {
-    this._product=product;
+  constructor(product: IProduct) {
+    this._product = product;
   }
 
   // async getById() {

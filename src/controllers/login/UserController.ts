@@ -24,12 +24,12 @@ class UserController {
     }
   }
   getUser() {
-    const parseUser = new ParseBody<IUser>(this._req, this._user);
+    const parseUser = new ParseBody<IUser>(this._req.body, this._user);
     this._user = parseUser.parseBody();
     return Object.assign(this._user, this._login) as Spread<IUser, ILogin>;
   }
   getLogin() {
-    const parseLogin = new ParseBody<ILogin>(this._req, this._login);
+    const parseLogin = new ParseBody<ILogin>(this._req.body, this._login);
     this._login = parseLogin.parseBody();
     this.Encode();
     return this._login;

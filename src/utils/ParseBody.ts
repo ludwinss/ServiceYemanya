@@ -1,11 +1,9 @@
-import { Request } from 'express';
-
 class ParseBody<T> {
   private _req: any;
   private _objectValues: T;
   private _onlyInstancesInBody: Partial<T>;
   private _keyObject: Array<keyof T> = [];
-  constructor(req: Request, initValues: T) {
+  constructor(req: any, initValues: T) {
     this._req = req;
     this._objectValues = initValues;
     this._onlyInstancesInBody = {};
@@ -13,12 +11,12 @@ class ParseBody<T> {
   parseBody(omitFields = false): T {
     this._keyObject = Object.keys(this._objectValues) as Array<keyof T>;
     for (const key of this._keyObject) {
-      if (key in this._req.body) {
-        if (this._req.body[key] === '' && this._objectValues[key] !== null) {
+      if (key in this._req) {
+        if (this._req[key] === '' && this._objectValues[key] !== null) {
           throw new Error(`Doesn't allow fields empty`);
         }
-        if (this._req.body[key] !== '') {
-          this._objectValues[key] = this._req.body[key];
+        if (this._req[key] !== '') {
+          this._objectValues[key] = this._req[key];
         }
       }
     }
@@ -41,10 +39,10 @@ class ParseBody<T> {
   parseBodyUnStrict() {
     this._keyObject = Object.keys(this._objectValues) as Array<keyof T>;
     for (const key of this._keyObject)
-      if (key in this._req.body) {
-        if (this._req.body[key] === '') throw new Error(`Doesn't allow fields empty`);
+      if (key in this._req) {
+        if (this._req[key] === '') throw new Error(`Doesn't allow fields empty`);
 
-        this._onlyInstancesInBody[key] = this._req.body[key];
+        this._onlyInstancesInBody[key] = this._req[key];
       }
     return this._onlyInstancesInBody;
   }

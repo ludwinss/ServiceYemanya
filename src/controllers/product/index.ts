@@ -4,8 +4,35 @@ import ProductHandler from '../MainProductController';
 import ProductController from './ProductController';
 
 class BuildProduct extends ProductHandler {
-  public runaa(data:any) {
-    this.handle({ event: 'CREATE',data });
+  public runaa(data: any) {
+    this.handle({ event: 'CREATE', data });
+  }
+  private madeNewProductWithoutPhoto(
+    newProduct: IProduct
+  ): { event: 'ERROR'; data: string } | { event: 'CREATE'; data: any } {
+    try {
+      const response = new ProductController(newProduct).addProductWithoutPhoto();
+      if (typeof response === 'string') throw response;
+      return { data: response, event: 'CREATE' };
+    } catch (error) {
+      return { event: 'ERROR', data: String(error) };
+    }
+  }
+
+  public async handle(request: any) {
+    // try {
+
+    //   const { event } = data;
+    //   switch (event) {
+    //     case 'CREATE':
+    //       c await this.madeNewProductWithoutPhoto(new ParseBody<IProduct>(data.data, this._resetProduct()).parseBody());
+    //     default:
+    //       return {};
+    //   }
+    // } catch (error) {
+    //   console.log(error)
+    // }
+    return super.handle({ event: 'CREATE', data: {} });
   }
 
   // public madeFindAllProducts() {
@@ -26,14 +53,6 @@ class BuildProduct extends ProductHandler {
   //     this.run(error as object, EVENT_ERROR);
   //   }
   // }
-  private async madeNewProductWithoutPhoto(newProduct:IProduct) {
-    try {
-      return  await new ProductController(newProduct).addProductWithoutPhoto();
-    } catch (error) {
-      console.log(error);
-      return {};
-    }
-  }
   // private madeChangesOnProduct() {
   //   try {
   //     const madeChanges = new ProductController(this._req);
@@ -43,33 +62,9 @@ class BuildProduct extends ProductHandler {
   //     this.run(error as object, EVENT_ERROR);
   //   }
   // }
-  async handleEvent(data:any) {
-    try{
-
-    const {event}=data;
-    console.log(data.data.body)
-    switch (event) {
-      case 'CREATE':
-        return await this.madeNewProductWithoutPhoto(new ParseBody<IProduct>(data.data,this._resetProduct()).parseBody());
-      default:
-        return {};
-    }
-    }catch(error){
-      console.log(error)
-    }
-  }
-
-  public async handle(request: any) {
-    const data = await this.handleEvent(request);
-    console.log(data)
-
-
-    return super.handle({ event: 'CREATE', data });
-  }
-
   private _resetProduct(): IProduct {
     return {
-      name: '',
+      name: String(),
       description: null,
       category: null,
       type: null

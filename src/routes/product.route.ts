@@ -14,8 +14,8 @@ function buildProductRoute(route: Router) {
     const product = new BuildProduct();
     const stock = new BuildStock();
     //product.setNextHandler(stock);
-   // stock.setNextHandler(refill);
-    product.runaa(req);
+    // stock.setNextHandler(refill);
+    product.runaa(req.body);
   });
 }
 
