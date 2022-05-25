@@ -1,14 +1,11 @@
 import { IProduct } from '../../interfaces/IProduct';
 import { Product } from '../../models';
-import ParseBody from '../../utils/ParseBody';
 
 class ProductController {
   private _product: IProduct;
-  private parseProduct: ParseBody<IProduct>;
 
-  constructor(params?: any) {
-    this._product = this._resetProduct();
-    this.parseProduct = new ParseBody<IProduct>(params, this._product);
+  constructor(product:IProduct) {
+    this._product=product;
   }
 
   // async getById() {
@@ -62,14 +59,6 @@ class ProductController {
     } catch (error) {
       return String(error);
     }
-  }
-  private _resetProduct(): IProduct {
-    return {
-      name: '',
-      description: null,
-      category: null,
-      type: null
-    };
   }
 }
 

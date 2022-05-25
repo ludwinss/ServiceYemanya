@@ -5,12 +5,12 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "pwa-node",
+      "command": "npm run dev",
+      "name": "Run npm start",
       "request": "launch",
-      "name": "Launch Program",
-      "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}\\src\\utils\\HttpResponse.ts",
-      "outFiles": ["${workspaceFolder}/**/*.js"]
+      "type": "node-terminal"
     }
+
+
   ]
 }

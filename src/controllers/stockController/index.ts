@@ -1,36 +1,37 @@
-import { EVENT_ERROR, EVENT_NULL, EVENT_OK } from '../../constants/Event.constants';
 import { IStock } from '../../interfaces/IStock';
 import ParseBody from '../../utils/ParseBody';
-import { IController } from '../Controller';
 import ProductHandler from '../MainProductController';
 import StockController from './StockController';
 
 class BuildStock extends ProductHandler {
-  private readonly _stock: IStock;
-  constructor(stock: IStock) {
-    super();
-    this._stock = stock;
-  }
-  private async addNewStock() {
+  private async addNewStock(newStock:IStock) {
     try {
-      return await new StockController(this._stock).createStock();
+      return await new StockController(newStock).createStock();
     } catch (error) {
       console.log(error);
       return {};
     }
   }
   public async handle(request: any) {
-    const { event } = request;
-    const data = await this.handleEvent(event);
+    const data = await this.handleEvent(request);
     return super.handle({ event: 'CREATE', data });
   }
-  async handleEvent(event: string) {
+  async handleEvent(data: any) {
+    const {event}=data;
     switch (event) {
       case 'CREATE':
-        return await this.addNewStock();
+        return await this.addNewStock(new ParseBody<IStock>(data.data,this._resetStock()).parseBody());
       default:
         return {};
     }
+  }
+  private _resetStock():IStock{
+    return {
+      id_product:Number()as any,
+      price:Number(),
+      total:Number()
+    }
+
   }
 }
 

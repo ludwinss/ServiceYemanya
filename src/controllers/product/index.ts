@@ -1,19 +1,11 @@
-import { Request, Response } from 'express';
-
+import { IProduct } from '../../interfaces/IProduct';
+import ParseBody from '../../utils/ParseBody';
 import ProductHandler from '../MainProductController';
 import ProductController from './ProductController';
 
 class BuildProduct extends ProductHandler {
-  private _res: Response;
-  private _req: Request;
-  constructor(req: Request, res: Response) {
-    super();
-    this._req = req;
-    this._res = res;
-  }
-  public runaa() {
-    this.handle({ event: 'CREATE' });
-    console.log(super.getState());
+  public runaa(data:any) {
+    this.handle({ event: 'CREATE',data });
   }
 
   // public madeFindAllProducts() {
@@ -34,10 +26,9 @@ class BuildProduct extends ProductHandler {
   //     this.run(error as object, EVENT_ERROR);
   //   }
   // }
-  private madeNewProductWithoutPhoto() {
+  private async madeNewProductWithoutPhoto(newProduct:IProduct) {
     try {
-      const addNewProduct = new ProductController(this._req);
-      addNewProduct.addProductWithoutPhoto();
+      return  await new ProductController(newProduct).addProductWithoutPhoto();
     } catch (error) {
       console.log(error);
       return {};
@@ -52,20 +43,37 @@ class BuildProduct extends ProductHandler {
   //     this.run(error as object, EVENT_ERROR);
   //   }
   // }
-  async handleEvent(event: string) {
+  async handleEvent(data:any) {
+    try{
+
+    const {event}=data;
+    console.log(data.data.body)
     switch (event) {
       case 'CREATE':
-        return await this.madeNewProductWithoutPhoto();
+        return await this.madeNewProductWithoutPhoto(new ParseBody<IProduct>(data.data,this._resetProduct()).parseBody());
       default:
         return {};
+    }
+    }catch(error){
+      console.log(error)
     }
   }
 
   public async handle(request: any) {
-    const { event } = request;
-    const data = await this.handleEvent(event);
+    const data = await this.handleEvent(request);
+    console.log(data)
+
 
     return super.handle({ event: 'CREATE', data });
+  }
+
+  private _resetProduct(): IProduct {
+    return {
+      name: '',
+      description: null,
+      category: null,
+      type: null
+    };
   }
 }
 export default BuildProduct;

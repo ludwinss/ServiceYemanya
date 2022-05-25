@@ -11,13 +11,11 @@ function buildProductRoute(route: Router) {
   // route.get('/product/findbyid/:id', (req, res) => new BuildProduct(req, res).madeFindOneProductById());
   // route.post('/product/modify/:id', isAdmin, (req, res) => new BuildProduct(req, res).madeChangesOnProduct());
   route.post('/product/add', isAdmin, (req, res) => {
-    const product = new BuildProduct(req, res);
-    const stock = new BuildStock({ id_product: 1 as any, price: 33, total: 1 });
-    const refill = new BuilReFillProduct({ amount: 1, id_owner: 1 as any, id_product: 1 as any });
-    product.setNextHandler(stock);
-    stock.setNextHandler(refill);
-    product.runaa();
-    refill.getState();
+    const product = new BuildProduct();
+    const stock = new BuildStock();
+    //product.setNextHandler(stock);
+   // stock.setNextHandler(refill);
+    product.runaa(req);
   });
 }
 
