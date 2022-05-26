@@ -15,7 +15,7 @@ function buildProductRoute(route: Router) {
     const stock = new BuildStock();
     //product.setNextHandler(stock);
     // stock.setNextHandler(refill);
-    product.runaa(req.body);
+    product.start(req.body);
   });
 }
 

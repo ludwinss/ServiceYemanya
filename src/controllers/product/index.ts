@@ -1,38 +1,38 @@
+import { EVENT_ERROR } from '../../constants/Event.constants';
+import { EVENT_CREATE } from '../../constants/response-events.constants';
 import { IProduct } from '../../interfaces/IProduct';
 import ParseBody from '../../utils/ParseBody';
 import ProductHandler from '../MainProductController';
 import ProductController from './ProductController';
 
 class BuildProduct extends ProductHandler {
-  public runaa(data: any) {
-    this.handle({ event: 'CREATE', data });
+  public start<T>(req: T) {
+    this.handle({ event: 'CREATE', res: req });
   }
-  private madeNewProductWithoutPhoto(
-    newProduct: IProduct
-  ): { event: 'ERROR'; data: string } | { event: 'CREATE'; data: any } {
+
+  private async madeNewProductWithoutPhoto<T>(res: T) {
     try {
-      const response = new ProductController(newProduct).addProductWithoutPhoto();
-      if (typeof response === 'string') throw response;
-      return { data: response, event: 'CREATE' };
+      const pbProduct = new ParseBody<IProduct>(res, this._resetProduct());
+      return await new ProductController(pbProduct.parseBody()).addProductWithoutPhoto();
     } catch (error) {
-      return { event: 'ERROR', data: String(error) };
+      console.error(error);
     }
   }
 
   public async handle(request: any) {
-    // try {
+    try {
+      const { event, res } = request;
+      if (event === EVENT_ERROR || request === undefined) throw null;
 
-    //   const { event } = data;
-    //   switch (event) {
-    //     case 'CREATE':
-    //       c await this.madeNewProductWithoutPhoto(new ParseBody<IProduct>(data.data, this._resetProduct()).parseBody());
-    //     default:
-    //       return {};
-    //   }
-    // } catch (error) {
-    //   console.log(error)
-    // }
-    return super.handle({ event: 'CREATE', data: {} });
+      switch (event) {
+        case EVENT_CREATE:
+          return super.handle(await this.madeNewProductWithoutPhoto(res));
+        default:
+          return super.handle(undefined);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   // public madeFindAllProducts() {

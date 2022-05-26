@@ -1,3 +1,5 @@
+import { EVENT_ERROR } from '../../constants/Event.constants';
+import { EVENT_CREATE } from '../../constants/response-events.constants';
 import { IProduct } from '../../interfaces/IProduct';
 import { Product } from '../../models';
 
@@ -49,16 +51,13 @@ class ProductController {
   //     return this.controller.run(e as object, EVENT_ERROR);
   //   }
   // }
-  async addProductWithoutPhoto(): Promise<Product | string> {
-    try {
-      const response = await Product.create(this._product);
-      if (!response) {
-        throw null;
-      }
-      return response;
-    } catch (error) {
-      return String(error);
-    }
+  addProductWithoutPhoto() {
+    return Product.create(this._product)
+      .then((product) => {
+        if (!product) throw null;
+        return { event: EVENT_CREATE, res: product };
+      })
+      .catch((error) => ({ event: EVENT_ERROR, res: error as object }));
   }
 }
 
