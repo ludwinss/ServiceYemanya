@@ -17,7 +17,6 @@ class MakeSell extends Model<InferAttributes<MakeSell>, InferCreationAttributes<
   declare amount: number;
   declare price: number;
   declare created_at: Date;
-  declare updated_at: Date;
 
   //association User(N:M)MakeSell  and  User(N:M)Product
   declare id_user: ForeignKey<User['id']>;
@@ -37,12 +36,16 @@ MakeSell.init(
     },
     price: { type: DataTypes.INTEGER, allowNull: false },
     amount: { type: DataTypes.INTEGER, allowNull: false },
-    created_at: DataTypes.DATE,
-    updated_at: DataTypes.DATE
+    created_at: DataTypes.DATE
   },
   {
     sequelize: DBConnection.getInstance(),
-    tableName: 'makesell'
+    tableName: 'makesell',
+    hooks: {
+      beforeCreate: (instance) => {
+        instance.created_at = new Date();
+      }
+    }
   }
 );
 

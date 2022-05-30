@@ -1,15 +1,7 @@
-import { EVENT_ERROR } from '../../constants/Event.constants';
-import { EVENT_CREATE } from '../../constants/response-events.constants';
 import { IProduct } from '../../interfaces/IProduct';
 import { Product } from '../../models';
 
 class ProductController {
-  private _product: IProduct;
-
-  constructor(product: IProduct) {
-    this._product = product;
-  }
-
   // async getById() {
   //   try {
   //     const id = this.parseProduct.parseID();
@@ -51,13 +43,10 @@ class ProductController {
   //     return this.controller.run(e as object, EVENT_ERROR);
   //   }
   // }
-  addProductWithoutPhoto() {
-    return Product.create(this._product)
-      .then((product) => {
-        if (!product) throw null;
-        return { event: EVENT_CREATE, res: product };
-      })
-      .catch((error) => ({ event: EVENT_ERROR, res: error as object }));
+  static addProductWithoutPhoto(newProduct: IProduct) {
+    return Product.create(newProduct)
+      .then((product) => product)
+      .catch((error) => String(error));
   }
 }
 

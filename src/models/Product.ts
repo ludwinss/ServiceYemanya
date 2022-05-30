@@ -11,6 +11,7 @@ import {
 import DBConnection from '../models/DBConnection';
 import MakeSell from './MakeSell';
 import ProductPhoto from './ProductPhoto';
+import ReFill from './ReFill';
 import Stock from './Stock';
 
 class Product extends Model<InferAttributes<Product>, InferCreationAttributes<Product>> {
@@ -23,16 +24,19 @@ class Product extends Model<InferAttributes<Product>, InferCreationAttributes<Pr
   declare updated_at: CreationOptional<Date>;
 
   //Product(1:1)Stock
-  declare stock: NonAttribute<Stock>;
+  declare stock?: NonAttribute<Stock>;
   //Product(1:M)ProductPhoto
-  declare productPhotos: NonAttribute<ProductPhoto[]>;
+  declare productPhotos?: NonAttribute<ProductPhoto[]>;
   //Product(1:M)MakeSell
-  declare makeSells: NonAttribute<MakeSell[]>;
+  declare makeSells?: NonAttribute<MakeSell[]>;
+  //Product(1:M)ReFill
+  declare reFills?: NonAttribute<ReFill[]>;
 
   declare static associations: {
     stock: Association<Product, Stock>;
     productPhotos: Association<Product, ProductPhoto>;
     makeSells: Association<Product, MakeSell>;
+    reFills: Association<Product, ReFill>;
   };
 }
 
@@ -71,7 +75,6 @@ Product.init(
         record.updated_at = new Date();
       },
       beforeUpdate: (record, options) => {
-        console.log('entri oir aca');
         record.updated_at = new Date();
       }
     }

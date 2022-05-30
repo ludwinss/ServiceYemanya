@@ -1,3 +1,9 @@
+export type events = 'CREATE' | 'MODIFY' | 'ERROR';
+export type handleParams = {
+  event: events;
+  res: undefined | object | any;
+};
+
 interface IProductHandler {
   setNextHandler(handler: IProductHandler): IProductHandler;
   handle(request: any): any;
@@ -10,11 +16,12 @@ abstract class ProductHandler implements IProductHandler {
     this.nextHandler = handler;
     return handler;
   }
-  public handle(request: any): any {
-    console.log(request);
-    if (this.nextHandler) return this.nextHandler.handle(request);
+  public handle(request: any): Promise<any> {
+    if (this.nextHandler) return Promise.resolve(this.nextHandler.handle(request));
 
-    return null;
+    return Promise.reject({ event: 'ERROR', res: undefined }).catch((e) => {
+      throw new Error(e);
+    });
   }
   public addState(data: any) {
     this.state.push(data);
@@ -23,5 +30,12 @@ abstract class ProductHandler implements IProductHandler {
     return this.state;
   }
 }
+
+abstract class State {
+  public abstract create(): void;
+  public abstract error(): void;
+}
+
+export { State };
 
 export default ProductHandler;

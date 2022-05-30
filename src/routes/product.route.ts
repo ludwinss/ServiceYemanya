@@ -10,12 +10,12 @@ function buildProductRoute(route: Router) {
   // route.get('/product/all', (req, res) => new BuildProduct(req, res).madeFindAllProducts());
   // route.get('/product/findbyid/:id', (req, res) => new BuildProduct(req, res).madeFindOneProductById());
   // route.post('/product/modify/:id', isAdmin, (req, res) => new BuildProduct(req, res).madeChangesOnProduct());
-  route.post('/product/add', isAdmin, (req, res) => {
+  route.post('/product/add', isAdmin, async (req, res) => {
     const product = new BuildProduct();
-    const stock = new BuildStock();
+    // const stock = new BuildStock();
+    await product.madeNewProductWithoutPhoto(req.body);
     //product.setNextHandler(stock);
     // stock.setNextHandler(refill);
-    product.start(req.body);
   });
 }
 

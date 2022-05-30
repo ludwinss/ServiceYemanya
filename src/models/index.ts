@@ -40,7 +40,12 @@ User.belongsToMany(Product, { through: MakeSell, foreignKey: { name: 'id_user', 
 Product.belongsToMany(User, { through: MakeSell, foreignKey: { name: 'id_product', allowNull: false } });
 
 //Relationships (N:M) ReFill Owner Product
-Owner.belongsToMany(Product, { through: ReFill, foreignKey: { name: 'id_owner', allowNull: false } });
-Product.belongsToMany(Owner, { through: ReFill, foreignKey: { name: 'id_product', allowNull: false } });
+// Owner.belongsToMany(Product, { through: ReFill, foreignKey: { name: 'id_owner', allowNull: false } });
+// Product.belongsToMany(Owner, { through: ReFill, foreignKey: { name: 'id_product', allowNull: false } });
+Owner.hasMany(ReFill, { foreignKey: { name: 'id_owner', allowNull: false } });
+ReFill.belongsTo(Owner, { foreignKey: { name: 'id_owner', allowNull: false } });
+
+Product.hasMany(ReFill, { foreignKey: { name: 'id_product', allowNull: false }, as: 'reFills' });
+ReFill.belongsTo(Product, { foreignKey: { name: 'id_product', allowNull: false } });
 
 export { DBConnection, MakeSell, Owner, Product, ProductPhoto, ReFill, Stock, User };

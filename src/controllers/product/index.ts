@@ -1,37 +1,17 @@
-import { EVENT_ERROR } from '../../constants/Event.constants';
-import { EVENT_CREATE } from '../../constants/response-events.constants';
+import { EVENT_CREATE, EVENT_ERROR } from '../../constants/response-events.constants';
 import { IProduct } from '../../interfaces/IProduct';
 import ParseBody from '../../utils/ParseBody';
-import ProductHandler from '../MainProductController';
 import ProductController from './ProductController';
 
-class BuildProduct extends ProductHandler {
-  public start<T>(req: T) {
-    this.handle({ event: 'CREATE', res: req });
-  }
-
-  private async madeNewProductWithoutPhoto<T>(res: T) {
+class BuildProduct {
+  public async madeNewProductWithoutPhoto(res: object) {
     try {
       const pbProduct = new ParseBody<IProduct>(res, this._resetProduct());
-      return await new ProductController(pbProduct.parseBody()).addProductWithoutPhoto();
+      const response = await ProductController.addProductWithoutPhoto(pbProduct.parseBody());
+      if (typeof response === 'string') throw response;
+      return { event: EVENT_CREATE, res: response };
     } catch (error) {
-      console.error(error);
-    }
-  }
-
-  public async handle(request: any) {
-    try {
-      const { event, res } = request;
-      if (event === EVENT_ERROR || request === undefined) throw null;
-
-      switch (event) {
-        case EVENT_CREATE:
-          return super.handle(await this.madeNewProductWithoutPhoto(res));
-        default:
-          return super.handle(undefined);
-      }
-    } catch (error) {
-      console.log(error);
+      return { event: EVENT_ERROR, res: String(error) as string };
     }
   }
 

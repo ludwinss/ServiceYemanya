@@ -1,4 +1,5 @@
 import {
+  Association,
   CreationOptional,
   DataTypes,
   ForeignKey,
@@ -23,6 +24,11 @@ class ReFill extends Model<InferAttributes<ReFill>, InferCreationAttributes<ReFi
 
   declare owners: NonAttribute<Owner[]>;
   declare products: NonAttribute<Product[]>;
+
+  declare static associations: {
+    products: Association<ReFill, Product>;
+    owners: Association<ReFill, Owner>;
+  };
 }
 
 ReFill.init(

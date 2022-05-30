@@ -12,19 +12,19 @@ class BuildStock extends ProductHandler {
       return {};
     }
   }
-  public async handle(request: any) {
-    const data = await this.handleEvent(request);
-    return super.handle({ event: 'CREATE', data });
-  }
-  async handleEvent(data: any) {
-    const { event } = data;
-    switch (event) {
-      case 'CREATE':
-        return await this.addNewStock(new ParseBody<IStock>(data.data, this._resetStock()).parseBody());
-      default:
-        return {};
-    }
-  }
+  // public async handle(request: any) {
+  //   const data = await this.handleEvent(request);
+  //   return super.handle({ event: 'CREATE', data });
+  // }
+  // async handleEvent(data: any) {
+  //   const { event } = data;
+  //   switch (event) {
+  //     case 'CREATE':
+  //       return await this.addNewStock(new ParseBody<IStock>(data.data, this._resetStock()).parseBody());
+  //     default:
+  //       return {};
+  //   }
+  // }
   private _resetStock(): IStock {
     return {
       id_product: Number() as any,
