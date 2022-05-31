@@ -1,4 +1,4 @@
-import { EVENT_ERROR, EVENT_NULL, EVENT_OK } from '../../constants/Event.constants';
+import { EVENT_ERROR, EVENT_NULL, EVENT_OK } from '../../constants/response-events.constants';
 import { IGenerateToken } from '../../interfaces/IGenerateToken';
 import { IUser } from '../../interfaces/IUser';
 import { User } from '../../models';

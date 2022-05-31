@@ -1,41 +1,27 @@
-export type events = 'CREATE' | 'MODIFY' | 'ERROR';
-export type handleParams = {
-  event: events;
-  res: undefined | object | any;
-};
+class Context {
+  private state: State;
 
-interface IProductHandler {
-  setNextHandler(handler: IProductHandler): IProductHandler;
-  handle(request: any): any;
-}
+  constructor(state: State) {
+    this.transitionTo(state);
+  }
 
-abstract class ProductHandler implements IProductHandler {
-  private nextHandler: IProductHandler;
-  private state: Array<any> = [];
-  public setNextHandler(handler: IProductHandler): IProductHandler {
-    this.nextHandler = handler;
-    return handler;
+  public transitionTo(state: State): void {
+    this.state = state;
+    this.state.setContext(this);
   }
-  public handle(request: any): Promise<any> {
-    if (this.nextHandler) return Promise.resolve(this.nextHandler.handle(request));
-
-    return Promise.reject({ event: 'ERROR', res: undefined }).catch((e) => {
-      throw new Error(e);
-    });
-  }
-  public addState(data: any) {
-    this.state.push(data);
-  }
-  public getState() {
-    return this.state;
+  public request(): void {
+    this.state.create();
   }
 }
 
 abstract class State {
-  public abstract create(): void;
-  public abstract error(): void;
+  protected context: Context;
+
+  public setContext(context: Context) {
+    this.context = context;
+  }
+
+  public abstract create(): Promise<void>;
 }
 
-export { State };
-
-export default ProductHandler;
+export { Context, State };

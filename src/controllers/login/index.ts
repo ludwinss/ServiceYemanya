@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { EVENT_ERROR, EVENT_NULL, EVENT_OK } from '../../constants/Event.constants';
+import { EVENT_ERROR, EVENT_NULL, EVENT_OK } from '../../constants/response-events.constants';
 import { IEncryptData } from '../../interfaces/IEncryptData';
 import EncryptData from '../../utils/EncryptData';
 import GenerateToken from '../../utils/GenerateToken';

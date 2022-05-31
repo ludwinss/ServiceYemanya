@@ -1,5 +1,6 @@
 import { Router } from 'express';
 
+import { Context } from '../controllers/MainProductController';
 import BuildProduct from '../controllers/product';
 import BuilReFillProduct from '../controllers/reFillProduct';
 import BuildStock from '../controllers/stockController';
@@ -11,9 +12,9 @@ function buildProductRoute(route: Router) {
   // route.get('/product/findbyid/:id', (req, res) => new BuildProduct(req, res).madeFindOneProductById());
   // route.post('/product/modify/:id', isAdmin, (req, res) => new BuildProduct(req, res).madeChangesOnProduct());
   route.post('/product/add', isAdmin, async (req, res) => {
-    const product = new BuildProduct();
+    const context = new Context(new BuildProduct(req.body));
+    context.request();
     // const stock = new BuildStock();
-    await product.madeNewProductWithoutPhoto(req.body);
     //product.setNextHandler(stock);
     // stock.setNextHandler(refill);
   });

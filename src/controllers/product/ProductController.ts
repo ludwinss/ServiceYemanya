@@ -43,9 +43,12 @@ class ProductController {
   //     return this.controller.run(e as object, EVENT_ERROR);
   //   }
   // }
-  static addProductWithoutPhoto(newProduct: IProduct) {
-    return Product.create(newProduct)
-      .then((product) => product)
+  static addProductWithoutPhoto(newProduct: IProduct): Promise<any | string> {
+    return Product.create(newProduct, { raw: true })
+      .then((product) => {
+        if (!product) throw product;
+        return product.get({ plain: true });
+      })
       .catch((error) => String(error));
   }
 }

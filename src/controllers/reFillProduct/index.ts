@@ -1,31 +1,32 @@
+import { EVENT_CREATE, EVENT_ERROR } from '../../constants/response-events.constants';
 import { IReFill } from '../../interfaces/IReFill';
 import ParseBody from '../../utils/ParseBody';
-import ProductHandler from '../MainProductController';
+import { State } from '../MainProductController';
 import ReFillController from './ReFillController';
 
-class BuilReFillProduct extends ProductHandler {
-  private async addRegister(reFillInstance: IReFill) {
+class BuildReFillProduct extends State {
+  // private _req: Request;
+  private responseDB: { event: string; res: string | object };
+  private pbReFill: ParseBody<IReFill>;
+  constructor(req: Request) {
+    super();
+    // this._req = req;
+    this.pbReFill = new ParseBody<IReFill>(req, this._resetReFillProduct());
+  }
+  private async addRegister() {
     try {
-      return await new ReFillController(reFillInstance).createReFill();
+      const response = await ReFillController.createReFill(this.pbReFill.parseBody());
+      if (typeof response === 'string') throw response;
+      this.responseDB = { event: EVENT_CREATE, res: response };
     } catch (error) {
-      console.log(error);
-      return {};
+      this.responseDB = { event: EVENT_ERROR, res: String(error) as string };
     }
   }
-  public async handle(request: any) {
-    const data = await this.handleEvent(request);
-    return super.handle({ event: 'CREATE', data });
+  public async create(): Promise<void> {
+    await this.addRegister();
+    console.log(this.responseDB);
   }
 
-  async handleEvent(data: any) {
-    const { event } = data;
-    switch (event) {
-      case 'CREATE':
-        return await this.addRegister(new ParseBody<IReFill>(data.data, this._resetReFillProduct()).parseBody());
-      default:
-        return {};
-    }
-  }
   private _resetReFillProduct(): IReFill {
     return {
       amount: Number(),
@@ -35,4 +36,4 @@ class BuilReFillProduct extends ProductHandler {
   }
 }
 
-export default BuilReFillProduct;
+export default BuildReFillProduct;
