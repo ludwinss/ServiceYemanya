@@ -16,6 +16,7 @@ async function isAdmin(req: Request, res: Response, next: NextFunction) {
     if (values.rol === 'user') {
       throw new Error(`Doesn't have permissions`);
     }
+    req.body['id_owner'] = values.sub;
     next();
   } catch (e: any) {
     res.status(401).send(HttpReponse.mistake(e));
@@ -35,6 +36,7 @@ async function isLogged(req: Request, res: Response, next: NextFunction) {
     if (values.rol === 'admin') {
       throw new Error(`Doesn't have permissions`);
     }
+    req.body['user'] = values.sub;
     next();
   } catch (e: any) {
     res.status(401).send(HttpReponse.mistake(e));

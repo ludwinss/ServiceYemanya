@@ -1,5 +1,3 @@
-import { Request } from 'express';
-
 import { EVENT_CREATE, EVENT_ERROR } from '../../constants/response-events.constants';
 import { IProduct } from '../../interfaces/IProduct';
 import ParseBody from '../../utils/ParseBody';
@@ -9,9 +7,9 @@ import ProductController from './ProductController';
 
 class BuildProduct extends State {
   private responseDB: { event: string; res: string | object };
-  private _req: Request;
+  private _req: any;
 
-  constructor(req: Request) {
+  constructor(req: any) {
     super();
     this._req = req;
   }
@@ -29,13 +27,19 @@ class BuildProduct extends State {
 
   public async create(): Promise<void> {
     await this.madeNewProductWithoutPhoto();
-    console.log(this.responseDB);
-
-    if (this.responseDB.event === EVENT_CREATE && typeof this.responseDB.res === 'object') {
-      const reqSuper = Object.assign(this._req, this.responseDB.res);
-      console.log(reqSuper);
-      // this.context.transitionTo(new BuilReFillProduct(this.responseDB.res))
+    if (this.responseDB.event === EVENT_ERROR) {
+      return this.context.handleError();
     }
+
+    const reqSuper = Object.assign(this._req, this.responseDB.res);
+    if ('id' in reqSuper) {
+      reqSuper['id_product'] = reqSuper['id'];
+    }
+    this.context.transitionTo(await new BuildReFillProduct(reqSuper));
+    this.context.requestCreate();
+  }
+  public error(): void {
+    console.log('error PE');
   }
 
   // public madeFindAllProducts() {

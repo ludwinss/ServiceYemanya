@@ -13,7 +13,7 @@ function buildProductRoute(route: Router) {
   // route.post('/product/modify/:id', isAdmin, (req, res) => new BuildProduct(req, res).madeChangesOnProduct());
   route.post('/product/add', isAdmin, async (req, res) => {
     const context = new Context(new BuildProduct(req.body));
-    context.request();
+    context.requestCreate();
     // const stock = new BuildStock();
     //product.setNextHandler(stock);
     // stock.setNextHandler(refill);

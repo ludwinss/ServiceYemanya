@@ -5,12 +5,12 @@ import { State } from '../MainProductController';
 import ReFillController from './ReFillController';
 
 class BuildReFillProduct extends State {
-  // private _req: Request;
   private responseDB: { event: string; res: string | object };
   private pbReFill: ParseBody<IReFill>;
-  constructor(req: Request) {
+  private _req: any;
+  constructor(req: any) {
     super();
-    // this._req = req;
+    this._req = req;
     this.pbReFill = new ParseBody<IReFill>(req, this._resetReFillProduct());
   }
   private async addRegister() {
@@ -24,7 +24,19 @@ class BuildReFillProduct extends State {
   }
   public async create(): Promise<void> {
     await this.addRegister();
-    console.log(this.responseDB);
+    console.log('refillcontroller');
+    if (this.responseDB.event === EVENT_ERROR) {
+      return this.context.handleError();
+    }
+    const reqSuper = Object.assign(this._req, this.responseDB.res);
+    if ('amount' in reqSuper) {
+      reqSuper['total'] = reqSuper['amount'];
+    }
+    this.context.transitionTo(await new BuildReFillProduct(reqSuper));
+    this.context.requestCreate();
+  }
+  public error(): void {
+    console.log('error PE REfill');
   }
 
   private _resetReFillProduct(): IReFill {

@@ -9,8 +9,11 @@ class Context {
     this.state = state;
     this.state.setContext(this);
   }
-  public request(): void {
+  public requestCreate(): void {
     this.state.create();
+  }
+  public handleError(): void {
+    this.state.error();
   }
 }
 
@@ -21,7 +24,8 @@ abstract class State {
     this.context = context;
   }
 
-  public abstract create(): Promise<void>;
+  public abstract create(): void;
+  public abstract error(): void;
 }
 
 export { Context, State };

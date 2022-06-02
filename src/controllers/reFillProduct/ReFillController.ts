@@ -3,6 +3,7 @@ import { ReFill } from '../../models';
 
 class ReFillController {
   public static createReFill(reFillProduct: IReFill): Promise<ReFill | string> {
+    console.log('entro');
     return ReFill.create(reFillProduct)
       .then((reFillInstance) => {
         if (!reFillInstance) throw reFillInstance;
