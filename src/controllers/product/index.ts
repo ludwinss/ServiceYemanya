@@ -1,4 +1,4 @@
-import { EVENT_CREATE, EVENT_ERROR } from '../../constants/response-events.constants';
+import { EVENT } from '../../constants/response-events.constants';
 import { IProduct } from '../../interfaces/IProduct';
 import ParseBody from '../../utils/ParseBody';
 import { State } from '../MainProductController';
@@ -6,42 +6,23 @@ import BuildReFillProduct from '../reFillProduct';
 import ProductController from './ProductController';
 
 class BuildProduct extends State {
-  private responseDB: { event: string; res: string | object };
-  private _req: any;
-
-  constructor(req: any) {
-    super();
-    this._req = req;
-  }
-
-  private async madeNewProductWithoutPhoto() {
-    try {
-      const pbProduct = new ParseBody<IProduct>(this._req, this._resetProduct());
-      const response = await ProductController.addProductWithoutPhoto(pbProduct.parseBody());
-      if (typeof response === 'string') throw response;
-      this.responseDB = { event: EVENT_CREATE, res: response };
-    } catch (error) {
-      this.responseDB = { event: EVENT_ERROR, res: String(error) as string };
-    }
-  }
-
   public async create(): Promise<void> {
-    await this.madeNewProductWithoutPhoto();
-    if (this.responseDB.event === EVENT_ERROR) {
-      return this.context.handleError();
+    try {
+      const pbProduct = new ParseBody<IProduct>(this.context.params, this._resetProduct());
+      if (!this.context.transaction) throw null;
+      const response = await ProductController.addProductWithoutPhoto(pbProduct.parseBody(), this.context.transaction);
+      if (typeof response === 'string') throw response;
+      this.context.params = Object.assign(this.context.params, response);
+      if ('id' in response) {
+        this.context.params['id_product'] = response['id'];
+      }
+      this.context.transitionTo(await new BuildReFillProduct());
+      this.context.requestCreate();
+    } catch (error) {
+      this.context.params = error;
+      this.context.sendResponse(error === 'null' ? EVENT.NULL : EVENT.ERROR);
     }
-
-    const reqSuper = Object.assign(this._req, this.responseDB.res);
-    if ('id' in reqSuper) {
-      reqSuper['id_product'] = reqSuper['id'];
-    }
-    this.context.transitionTo(await new BuildReFillProduct(reqSuper));
-    this.context.requestCreate();
   }
-  public error(): void {
-    console.log('error PE');
-  }
-
   // public madeFindAllProducts() {
   //   try {
   //     const findAll = new ProductController();
@@ -69,6 +50,11 @@ class BuildProduct extends State {
   //     this.run(error as object, EVENT_ERROR);
   //   }
   // }
+
+  public findByID(): void {
+    this.context.params = 'not implement';
+    this.context.sendResponse(EVENT.ERROR);
+  }
   private _resetProduct(): IProduct {
     return {
       name: String(),

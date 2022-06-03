@@ -6,17 +6,19 @@ import BuilReFillProduct from '../controllers/reFillProduct';
 import BuildStock from '../controllers/stockController';
 import { isAdmin } from '../middlewares/hasPermission';
 import { updateFiles } from '../middlewares/updateFiles';
+import { DBConnection } from '../models';
 
 function buildProductRoute(route: Router) {
   // route.get('/product/all', (req, res) => new BuildProduct(req, res).madeFindAllProducts());
-  // route.get('/product/findbyid/:id', (req, res) => new BuildProduct(req, res).madeFindOneProductById());
+  route.get('/product/findbyid/:id', (req, res) => {
+    const context = new Context(new BuildStock(), req.params, res);
+    context.requestCreate();
+  });
   // route.post('/product/modify/:id', isAdmin, (req, res) => new BuildProduct(req, res).madeChangesOnProduct());
   route.post('/product/add', isAdmin, async (req, res) => {
-    const context = new Context(new BuildProduct(req.body));
+    const createTransction = await DBConnection.getInstance().transaction();
+    const context = new Context(new BuildProduct(), req.body, res, createTransction);
     context.requestCreate();
-    // const stock = new BuildStock();
-    //product.setNextHandler(stock);
-    // stock.setNextHandler(refill);
   });
 }
 

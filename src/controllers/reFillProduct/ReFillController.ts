@@ -1,13 +1,14 @@
+import { Transaction } from 'sequelize/types';
+
 import { IReFill } from '../../interfaces/IReFill';
 import { ReFill } from '../../models';
 
 class ReFillController {
-  public static createReFill(reFillProduct: IReFill): Promise<ReFill | string> {
-    console.log('entro');
-    return ReFill.create(reFillProduct)
+  public static createReFill(reFillProduct: IReFill, transaction: Transaction): Promise<IReFill | string> {
+    return ReFill.create(reFillProduct, { transaction: transaction })
       .then((reFillInstance) => {
         if (!reFillInstance) throw reFillInstance;
-        return reFillInstance;
+        return reFillInstance.get({ plain: true });
       })
       .catch((error) => String(error));
   }

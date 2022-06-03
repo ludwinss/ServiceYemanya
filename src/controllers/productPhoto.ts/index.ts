@@ -1,16 +1,14 @@
 import { Request, Response } from 'express';
 
-import { EVENT_ERROR, EVENT_NULL, EVENT_OK } from '../../constants/response-events.constants';
+import { EVENT } from '../../constants/response-events.constants';
 import HttpResponse from '../../utils/HttpResponse';
 import { IController } from '../Controller';
-import MainProductController from '../MainProductController';
 import ProductPhotoController from '../productPhoto.ts/ProducPhotoController';
 
-class BuildProductPhoto extends MainProductController implements IController {
+class BuildProductPhoto implements IController {
   private _res: Response;
   private _req: Request;
   constructor(req: Request, res: Response) {
-    super();
     this._req = req;
     this._res = res;
   }
@@ -21,7 +19,7 @@ class BuildProductPhoto extends MainProductController implements IController {
       madeDelete.setController(this);
       madeDelete.deletePhotoByID();
     } catch (error) {
-      this.run(error as object, EVENT_ERROR);
+      this.run(error as object, EVENT.ERROR);
     }
   }
   madeGetProductImageByID() {
@@ -30,7 +28,7 @@ class BuildProductPhoto extends MainProductController implements IController {
       madeGetProduct.setController(this);
       madeGetProduct.getPhotoByProduct();
     } catch (error) {
-      this.run(error as object, EVENT_ERROR);
+      this.run(error as object, EVENT.ERROR);
     }
   }
   madeNewProductImageByIdProduct() {
@@ -39,19 +37,19 @@ class BuildProductPhoto extends MainProductController implements IController {
       newImageProduct.setController(this);
       newImageProduct.createPhotoByProduct();
     } catch (error) {
-      this.run(error as object, EVENT_ERROR);
+      this.run(error as object, EVENT.ERROR);
     }
   }
 
   run(send: object, event: string) {
     switch (event) {
-      case EVENT_OK:
+      case EVENT.OK:
         this._res.status(201).send(HttpResponse.ok(send));
         break;
-      case EVENT_ERROR:
+      case EVENT.ERROR:
         this._res.status(400).send(HttpResponse.mistake(String(send)));
         break;
-      case EVENT_NULL:
+      case EVENT.NULL:
         this._res.status(500).send(HttpResponse.fail());
         break;
     }

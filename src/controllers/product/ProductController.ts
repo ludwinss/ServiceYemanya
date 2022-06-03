@@ -1,3 +1,5 @@
+import { Transaction } from 'sequelize/types';
+
 import { IProduct } from '../../interfaces/IProduct';
 import { Product } from '../../models';
 
@@ -43,8 +45,8 @@ class ProductController {
   //     return this.controller.run(e as object, EVENT_ERROR);
   //   }
   // }
-  static addProductWithoutPhoto(newProduct: IProduct): Promise<any | string> {
-    return Product.create(newProduct, { raw: true })
+  static addProductWithoutPhoto(newProduct: IProduct, transaction: Transaction): Promise<IProduct | string> {
+    return Product.create(newProduct, { transaction: transaction })
       .then((product) => {
         if (!product) throw product;
         return product.get({ plain: true });

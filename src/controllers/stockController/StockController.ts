@@ -1,19 +1,24 @@
+import { Transaction } from 'sequelize/types';
+
 import { IStock } from '../../interfaces/IStock';
 import { Stock } from '../../models';
 
 class StockController {
-  private _stock: IStock;
-  constructor(stock: IStock) {
-    this._stock = stock;
+  static async createStock(stock: IStock, transaction: Transaction): Promise<IStock | string> {
+    return Stock.create(stock, { transaction: transaction })
+      .then((stockInstance) => {
+        if (!stockInstance) throw stockInstance;
+        return stockInstance.get({ plain: true });
+      })
+      .catch((error) => String(error));
   }
-  public async createStock(): Promise<Stock | string> {
-    try {
-      const newStock = await Stock.create(this._stock, { raw: true });
-      if (!newStock) throw null;
-      return newStock;
-    } catch (error) {
-      return String(error);
-    }
+  static async findStockByID(id: number) {
+    return Stock.findByPk(id)
+      .then((stockInstance) => {
+        if (!stockInstance) throw stockInstance;
+        return stockInstance.get({ plain: true });
+      })
+      .catch((error) => String(error));
   }
   // async incrementStock(idStock: number) {
   //   try {

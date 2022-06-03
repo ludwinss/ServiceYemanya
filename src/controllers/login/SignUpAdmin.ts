@@ -1,4 +1,4 @@
-import { EVENT_ERROR, EVENT_NULL, EVENT_OK } from '../../constants/response-events.constants';
+import { EVENT } from '../../constants/response-events.constants';
 import { IGenerateToken } from '../../interfaces/IGenerateToken';
 import { IUser } from '../../interfaces/IUser';
 import { Owner } from '../../models';
@@ -16,14 +16,14 @@ class SignUpAdmin extends BuildController {
     try {
       const newUser = await Owner.create(this._user);
       if (!newUser) {
-        return this.controller.run({}, EVENT_NULL);
+        return this.controller.run({}, EVENT.NULL);
       }
       this._generateToken.payload = String(newUser.id);
       this._generateToken.rol = 'admin';
       const newToken = this._generateToken.sign();
-      return this.controller.run({ token: newToken, user: newUser }, EVENT_OK);
+      return this.controller.run({ token: newToken, user: newUser }, EVENT.OK);
     } catch (e: any) {
-      this.controller.run(e, EVENT_ERROR);
+      this.controller.run(e, EVENT.ERROR);
     }
   }
 }

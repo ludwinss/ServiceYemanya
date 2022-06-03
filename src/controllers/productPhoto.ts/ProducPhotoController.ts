@@ -1,6 +1,6 @@
 import { Request } from 'express';
 
-import { EVENT_ERROR, EVENT_NULL, EVENT_OK } from '../../constants/response-events.constants';
+import { EVENT } from '../../constants/response-events.constants';
 import { IProductPhoto } from '../../interfaces/IProductPhoto';
 import { ProductPhoto } from '../../models';
 import ParseBody from '../../utils/ParseBody';
@@ -27,11 +27,11 @@ class ProductPhotoController extends BuildController {
         }
       });
       if (!response) {
-        return this.controller.run({}, EVENT_NULL);
+        return this.controller.run({}, EVENT.NULL);
       }
-      return this.controller.run(response, EVENT_OK);
+      return this.controller.run(response, EVENT.OK);
     } catch (e) {
-      return this.controller.run(e as object, EVENT_ERROR);
+      return this.controller.run(e as object, EVENT.ERROR);
     }
   }
 
@@ -47,11 +47,11 @@ class ProductPhotoController extends BuildController {
       }
       const response = await Promise.all(promisesProductPhoto);
       if (!response) {
-        return this.controller.run(response, EVENT_NULL);
+        return this.controller.run(response, EVENT.NULL);
       }
-      return this.controller.run(response, EVENT_OK);
+      return this.controller.run(response, EVENT.OK);
     } catch (e) {
-      return this.controller.run(e as object, EVENT_ERROR);
+      return this.controller.run(e as object, EVENT.ERROR);
     }
   }
   async deletePhotoByID() {
@@ -59,11 +59,11 @@ class ProductPhotoController extends BuildController {
       const id = this._parseProductPhoto.parseID();
       const response = await ProductPhoto.destroy({ where: { id: id } });
       if (!response) {
-        return this.controller.run({}, EVENT_NULL);
+        return this.controller.run({}, EVENT.NULL);
       }
-      return this.controller.run({ id: response }, EVENT_OK);
+      return this.controller.run({ id: response }, EVENT.OK);
     } catch (e) {
-      return this.controller.run(e as object, EVENT_ERROR);
+      return this.controller.run(e as object, EVENT.ERROR);
     }
   }
   private resetProductPhoto(): IProductPhoto {

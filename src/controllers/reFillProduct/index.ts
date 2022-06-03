@@ -1,42 +1,31 @@
-import { EVENT_CREATE, EVENT_ERROR } from '../../constants/response-events.constants';
+import { EVENT } from '../../constants/response-events.constants';
 import { IReFill } from '../../interfaces/IReFill';
 import ParseBody from '../../utils/ParseBody';
 import { State } from '../MainProductController';
+import BuildStock from '../stockController';
 import ReFillController from './ReFillController';
 
 class BuildReFillProduct extends State {
-  private responseDB: { event: string; res: string | object };
-  private pbReFill: ParseBody<IReFill>;
-  private _req: any;
-  constructor(req: any) {
-    super();
-    this._req = req;
-    this.pbReFill = new ParseBody<IReFill>(req, this._resetReFillProduct());
-  }
-  private async addRegister() {
-    try {
-      const response = await ReFillController.createReFill(this.pbReFill.parseBody());
-      if (typeof response === 'string') throw response;
-      this.responseDB = { event: EVENT_CREATE, res: response };
-    } catch (error) {
-      this.responseDB = { event: EVENT_ERROR, res: String(error) as string };
-    }
-  }
   public async create(): Promise<void> {
-    await this.addRegister();
-    console.log('refillcontroller');
-    if (this.responseDB.event === EVENT_ERROR) {
-      return this.context.handleError();
+    try {
+      const pbReFill = new ParseBody<IReFill>(this.context.params, this._resetReFillProduct());
+      if (!this.context.transaction) throw null;
+      const responseDB = await ReFillController.createReFill(pbReFill.parseBody(), this.context.transaction);
+      if (typeof responseDB === 'string') throw responseDB;
+      this.context.params = Object.assign(this.context.params, responseDB);
+      if ('amount' in responseDB) {
+        this.context.params['total'] = responseDB['amount'];
+      }
+      this.context.transitionTo(new BuildStock());
+      this.context.requestCreate();
+    } catch (error) {
+      this.context.params = error;
+      this.context.sendResponse(error === 'null' ? EVENT.NULL : EVENT.ERROR);
     }
-    const reqSuper = Object.assign(this._req, this.responseDB.res);
-    if ('amount' in reqSuper) {
-      reqSuper['total'] = reqSuper['amount'];
-    }
-    this.context.transitionTo(await new BuildReFillProduct(reqSuper));
-    this.context.requestCreate();
   }
-  public error(): void {
-    console.log('error PE REfill');
+  public findByID(): void {
+    this.context.params = 'not implement';
+    this.context.sendResponse(EVENT.ERROR);
   }
 
   private _resetReFillProduct(): IReFill {

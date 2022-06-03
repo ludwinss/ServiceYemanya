@@ -1,4 +1,4 @@
-import { EVENT_ERROR, EVENT_NULL, EVENT_OK } from '../../constants/response-events.constants';
+import { EVENT } from '../../constants/response-events.constants';
 import { IGenerateToken, roles } from '../../interfaces/IGenerateToken';
 import { ILogin } from '../../interfaces/IUser';
 import { Owner, User } from '../../models';
@@ -19,15 +19,15 @@ class SignIn extends BuildController {
       const foundUser = await this.loginByUser();
 
       if (!foundUser) {
-        return this.controller.run({}, EVENT_NULL);
+        return this.controller.run({}, EVENT.NULL);
       }
 
       this._generateToken.payload = String(foundUser.id);
       this._generateToken.rol = foundUser.rol;
       const newToken = this._generateToken.sign();
-      return this.controller.run({ user: foundUser, token: newToken }, EVENT_OK);
+      return this.controller.run({ user: foundUser, token: newToken }, EVENT.OK);
     } catch (e: any) {
-      return this.controller.run(e, EVENT_ERROR);
+      return this.controller.run(e, EVENT.ERROR);
     }
   }
 

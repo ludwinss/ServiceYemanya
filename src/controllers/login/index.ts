@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { EVENT_ERROR, EVENT_NULL, EVENT_OK } from '../../constants/response-events.constants';
+import { EVENT } from '../../constants/response-events.constants';
 import { IEncryptData } from '../../interfaces/IEncryptData';
 import EncryptData from '../../utils/EncryptData';
 import GenerateToken from '../../utils/GenerateToken';
@@ -28,7 +28,7 @@ class BuildLogin implements IController {
       _signIn.setController(this);
       await _signIn.start();
     } catch (error: any) {
-      return this.run(error, EVENT_ERROR);
+      return this.run(error, EVENT.ERROR);
     }
   }
 
@@ -38,7 +38,7 @@ class BuildLogin implements IController {
       _signUp.setController(this);
       await _signUp.start();
     } catch (error: any) {
-      this.run(error, EVENT_ERROR);
+      this.run(error, EVENT.ERROR);
     }
   }
   async madeSignUpAdmin() {
@@ -50,19 +50,19 @@ class BuildLogin implements IController {
       _signUpAdmin.setController(this);
       await _signUpAdmin.start();
     } catch (error: any) {
-      this.run(error, EVENT_ERROR);
+      this.run(error, EVENT.ERROR);
     }
   }
 
   run(send: object, event: string) {
     switch (event) {
-      case EVENT_OK:
+      case EVENT.OK:
         this._res.status(201).send(HttpResponse.ok(send));
         break;
-      case EVENT_ERROR:
+      case EVENT.ERROR:
         this._res.status(400).send(HttpResponse.mistake(String(send)));
         break;
-      case EVENT_NULL:
+      case EVENT.NULL:
         this._res.status(500).send(HttpResponse.fail());
         break;
     }
