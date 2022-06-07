@@ -1,65 +1,100 @@
-import { Response } from 'express';
-import { Transaction } from 'sequelize/types';
+import { Request, Response } from 'express';
 
 import { EVENT } from '../constants/response-events.constants';
-import HttpReponse from '../utils/HttpResponse';
+import { DBConnection } from '../models';
+import HttpResponse from '../utils/HttpResponse';
+import BuildProduct from './product';
+import BuildReFillProduct from './reFillProduct';
+import BuildStock from './stockController';
 
-class Context {
-  private state: State;
-  constructor(state: State, private _params: any, private _response: Response, private _transaction?: Transaction) {
-    this.transitionTo(state);
+class MainProductController {
+  #request: Request;
+  #response: Response;
+  constructor(req: Request, res: Response) {
+    this.#request = req;
+    this.#response = res;
   }
+  public async create() {
+    const transaction = await DBConnection.getInstance().transaction();
+    try {
+      const newProduct = await new BuildProduct(this.#request.body).create(transaction);
 
-  public transitionTo(state: State): void {
-    this.state = state;
-    this.state.setContext(this);
-  }
-  public requestCreate(): void {
-    this.state.create();
-  }
+      if (newProduct.event !== EVENT.OK) throw newProduct;
+      this.renameKey(newProduct.res, 'id', 'id_product');
 
-  public get transaction(): Transaction | null {
-    if (this._transaction) return this._transaction;
-    return null;
-  }
+      const newReFill = await new BuildReFillProduct(Object.assign(this.#request.body, newProduct.res)).create(
+        transaction
+      );
+      if (newReFill.event !== EVENT.OK) throw newReFill;
+      this.renameKey(newReFill.res, 'amount', 'total');
 
-  public sendResponse(event: EVENT) {
-    if (this.transaction) event === EVENT.OK ? this.transaction.commit() : this.transaction.rollback();
+      const newStock = await new BuildStock(Object.assign(this.#request.body, newProduct.res, newReFill.res)).create(
+        transaction
+      );
+      if (newStock.event !== EVENT.OK) throw newStock;
 
-    switch (event) {
-      case EVENT.OK:
-        this.res.status(200).send(HttpReponse.ok(this._params));
-        break;
-      case EVENT.ERROR:
-        this.res.status(400).send(HttpReponse.mistake(this._params));
-        break;
-      case EVENT.NULL:
-        this.res.status(500).send(HttpReponse.fail());
-        break;
-      default:
-        this.res.status(500).send(HttpReponse.fail());
+      transaction.commit();
+      return this.#response.status(200).send(HttpResponse.ok(newStock.res));
+    } catch (error: any) {
+      transaction.rollback();
+      if ('res' in error)
+        return this.#response
+          .status(400)
+          .send(error.res === 'null' ? HttpResponse.fail() : HttpResponse.mistake(error.res));
+      return this.#response.status(500).send(HttpResponse.mistake(error));
     }
   }
-  public get params() {
-    return this._params;
+  public async modifyProduct() {
+    try {
+      const modify = await new BuildProduct(this.#request.body).madeChangesOnProduct(parseInt(this.#request.params.id));
+      if (modify.event !== EVENT.OK) throw modify;
+
+      return this.#response.status(200).send(HttpResponse.ok(modify.res));
+    } catch (error: any) {
+      if ('res' in error)
+        return this.#response
+          .status(400)
+          .send(error.res === 'null' ? HttpResponse.fail() : HttpResponse.mistake(error.res));
+
+      return this.#response.status(500).send(error);
+    }
   }
-  public set params(params: any) {
-    this._params = params;
+  public async findStockByIDProduct() {
+    try {
+      const findProduct = await BuildProduct.madeFindOneProductById(parseInt(this.#request.params.id));
+      if (findProduct.event !== EVENT.OK) throw findProduct;
+
+      return this.#response.status(200).send(HttpResponse.ok(findProduct.res));
+    } catch (error: any) {
+      if ('res' in error)
+        return this.#response
+          .status(400)
+          .send(error.res === 'null' ? HttpResponse.fail() : HttpResponse.mistake(error.res));
+
+      return this.#response.status(500).send(error);
+    }
   }
-  public get res() {
-    return this._response;
+  public async findAllProduct() {
+    try {
+      const foundStock = await BuildProduct.madeFindAllProducts();
+      console.log(foundStock);
+      if (foundStock.event !== EVENT.OK) throw foundStock;
+      return this.#response.status(200).send(HttpResponse.ok(foundStock.res));
+    } catch (error: any) {
+      if ('res' in error)
+        return this.#response
+          .status(400)
+          .send(error.res === 'null' ? HttpResponse.fail() : HttpResponse.mistake(error.res));
+      return this.#response.status(500).send(HttpResponse.mistake(error));
+    }
+  }
+
+  private renameKey(obj: any, oldKey: string, newKey: string) {
+    if (oldKey in obj) {
+      obj[newKey] = obj[oldKey];
+      delete obj[oldKey];
+    }
   }
 }
 
-abstract class State {
-  protected context: Context;
-
-  public setContext(context: Context) {
-    this.context = context;
-  }
-
-  public abstract create(): void;
-  public abstract findByID(): void;
-}
-
-export { Context, State };
+export default MainProductController;

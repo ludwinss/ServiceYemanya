@@ -1,34 +1,23 @@
 import { Router } from 'express';
 
-import { Context } from '../controllers/MainProductController';
-import BuildProduct from '../controllers/product';
-import BuilReFillProduct from '../controllers/reFillProduct';
-import BuildStock from '../controllers/stockController';
+import MainProductController from '../controllers/MainProductController';
+import BuildProductPhoto from '../controllers/productPhoto.ts';
 import { isAdmin } from '../middlewares/hasPermission';
 import { updateFiles } from '../middlewares/updateFiles';
-import { DBConnection } from '../models';
 
 function buildProductRoute(route: Router) {
-  // route.get('/product/all', (req, res) => new BuildProduct(req, res).madeFindAllProducts());
-  route.get('/product/findbyid/:id', (req, res) => {
-    const context = new Context(new BuildStock(), req.params, res);
-    context.requestCreate();
-  });
-  // route.post('/product/modify/:id', isAdmin, (req, res) => new BuildProduct(req, res).madeChangesOnProduct());
-  route.post('/product/add', isAdmin, async (req, res) => {
-    const createTransction = await DBConnection.getInstance().transaction();
-    const context = new Context(new BuildProduct(), req.body, res, createTransction);
-    context.requestCreate();
-  });
+  route.get('/product/all', (req, res) => new MainProductController(req, res).findAllProduct());
+  route.get('/product/findbyid/:id', (req, res) => { new MainProductController(req, res).findStockByIDProduct(); });
+  route.post('/product/modify/:id', isAdmin, (req, res) => new MainProductController(req, res).modifyProduct());
+  route.post('/product/add', isAdmin, async (req, res) => { new MainProductController(req, res).create(); });
 }
 
 function buildProductPhotoRoute(route: Router) {
-  console.log('');
-  // route.get('/product/image/:id', (req, res) => new BuildProduct(req, res).madeGetProductImageByID());
-  // route.post('/product/image/add/:id', isAdmin, updateFiles().any(), (req, res) =>
-  //   new BuildProduct(req, res).madeNewProductImageByIdProduct()
-  // );
-  // route.post('/product/image/delete/:id', isAdmin, (req, res) => new BuildProduct(req, res).madeDeleteProductImage());
+  route.get('/product/image/:id', (req, res) => new BuildProductPhoto(req, res).madeGetProductImageByID());
+  route.post('/product/image/add/:id', isAdmin, updateFiles().any(), (req, res) =>
+    new BuildProductPhoto(req, res).madeNewProductImageByIdProduct()
+  );
+  route.post('/product/image/delete/:id', isAdmin, (req, res) => new BuildProductPhoto(req, res).madeDeleteProductImage());
 }
 
 export { buildProductPhotoRoute, buildProductRoute };

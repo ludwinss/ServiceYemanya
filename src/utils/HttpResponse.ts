@@ -1,4 +1,4 @@
-class HttpReponse {
+class HttpResponse {
   static ok(data: any) {
     return { data: data, success: true };
   }
@@ -10,4 +10,4 @@ class HttpReponse {
   }
 }
 
-export default HttpReponse;
+export default HttpResponse;

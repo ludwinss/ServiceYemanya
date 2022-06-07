@@ -15,12 +15,12 @@ class ProductPhotoController extends BuildController {
     super();
     this._req = req;
     this._productPhoto = this.resetProductPhoto();
-    this._parseProductPhoto = new ParseBody<IProductPhoto>(req, this._productPhoto);
+    this._parseProductPhoto = new ParseBody<IProductPhoto>(req.body, this._productPhoto);
   }
 
   async getPhotoByProduct() {
     try {
-      const id = this._parseProductPhoto.parseID();
+      const id = this._req.params.id;
       const response = await ProductPhoto.findAndCountAll({
         where: {
           id_product: id
@@ -37,7 +37,7 @@ class ProductPhotoController extends BuildController {
 
   async createPhotoByProduct() {
     try {
-      this._productPhoto.id_product = this._parseProductPhoto.parseID();
+      this._productPhoto.id_product = BigInt(this._req.params.id);
       const files = this._req.files as Express.Multer.File[];
       const promisesProductPhoto: Promise<IProductPhoto>[] = [];
       for (const file of files) {
@@ -56,7 +56,7 @@ class ProductPhotoController extends BuildController {
   }
   async deletePhotoByID() {
     try {
-      const id = this._parseProductPhoto.parseID();
+      const id = this._req.params.id;
       const response = await ProductPhoto.destroy({ where: { id: id } });
       if (!response) {
         return this.controller.run({}, EVENT.NULL);

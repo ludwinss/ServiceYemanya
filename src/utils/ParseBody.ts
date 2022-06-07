@@ -46,13 +46,13 @@ class ParseBody<T> {
       }
     return this._onlyInstancesInBody;
   }
-  parseID() {
-    const { id } = this._req.params;
-    if (!id) {
-      throw new Error(`Doesn't provider ID Params `);
-    }
-    return id;
-  }
+  // parseID() {
+  //const { id } = this._req.params;
+  //if (!id) {
+  //throw new Error(`Doesn't provider ID Params `);
+  //}
+  //return id;
+  //}
 }
 
 export default ParseBody;

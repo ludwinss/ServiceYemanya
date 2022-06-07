@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "removeComments": true,
+    "alwaysStrict": false,
     "strictPropertyInitialization": false,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,

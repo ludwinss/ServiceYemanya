@@ -1,50 +1,45 @@
 import { Transaction } from 'sequelize/types';
 
 import { IProduct } from '../../interfaces/IProduct';
-import { Product } from '../../models';
+import { Product, ProductPhoto, Stock } from '../../models';
 
 class ProductController {
-  // async getById() {
-  //   try {
-  //     const id = this.parseProduct.parseID();
-  //     const response = await Product.findByPk(id);
-  //     if (!response) {
-  //       return this.controller.run({}, EVENT_NULL);
-  //     }
-  //     return this.controller.run(response, EVENT_OK);
-  //   } catch (e) {
-  //     return this.controller.run(e as object, EVENT_ERROR);
-  //   }
-  // }
+  public static async modifyProductById(foundProduct: Partial<IProduct>, id: number) {
+    try {
+      const oldProduct = await Product.findOne({
+        where: { id: id },
+        attributes: { exclude: ['create_at', 'update_at'] }
+      });
+      if (!oldProduct) {
+        throw oldProduct;
+      }
+      await oldProduct.update(foundProduct);
+      return oldProduct;
+    } catch (e) {
+      return String(e);
+    }
+  }
+  public static getAll() {
+    return Product.findAll({
+      attributes: ['name', 'description', 'category', 'type'],
+      include: [{ model: Stock, attributes: ['total', 'price', 'id', 'updated_at', 'id_product'] }]
+    })
+      .then((product) => {
+        if (!product) throw product;
+        return product;
+      })
+      .catch((error) => String(error));
+  }
 
-  // async modifyProductById() {
-  //   try {
-  //     const modifyFields = this.parseProduct.parseBodyUnStrict();
-  //     const id = this.parseProduct.parseID();
-  //     const oldProduct = await Product.findOne({
-  //       where: { id: id },
-  //       attributes: { exclude: ['create_at', 'update_at'] }
-  //     });
-  //     if (!oldProduct) {
-  //       return this.controller.run({}, EVENT_NULL);
-  //     }
-  //     await oldProduct.update(modifyFields);
-  //     return this.controller.run(oldProduct, EVENT_OK);
-  //   } catch (e) {
-  //     return this.controller.run(e as object, EVENT_ERROR);
-  //   }
-  // }
-  // async getAll() {
-  //   try {
-  //     const response = await Product.findAll();
-  //     if (!response) {
-  //       return this.controller.run({}, EVENT_NULL);
-  //     }
-  //     return this.controller.run(response, EVENT_OK);
-  //   } catch (e) {
-  //     return this.controller.run(e as object, EVENT_ERROR);
-  //   }
-  // }
+  public static getById(id: number) {
+    return Product.findByPk(id, { include: [Stock, ProductPhoto] })
+      .then((product) => {
+        if (!product) throw product;
+        return product;
+      })
+      .catch((error) => String(error));
+  }
+
   static addProductWithoutPhoto(newProduct: IProduct, transaction: Transaction): Promise<IProduct | string> {
     return Product.create(newProduct, { transaction: transaction })
       .then((product) => {

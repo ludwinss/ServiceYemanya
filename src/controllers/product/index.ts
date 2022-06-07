@@ -1,60 +1,54 @@
+import { Transaction } from 'sequelize/types';
+
 import { EVENT } from '../../constants/response-events.constants';
 import { IProduct } from '../../interfaces/IProduct';
 import ParseBody from '../../utils/ParseBody';
-import { State } from '../MainProductController';
-import BuildReFillProduct from '../reFillProduct';
+import { IEvent } from '../Controller';
 import ProductController from './ProductController';
 
-class BuildProduct extends State {
-  public async create(): Promise<void> {
+class BuildProduct {
+  #pbProduct: ParseBody<IProduct>;
+  constructor(params: Partial<IProduct>) {
+    this.#pbProduct = new ParseBody(params, this._resetProduct());
+  }
+  public async create(transaction: Transaction): IEvent<IProduct> {
     try {
-      const pbProduct = new ParseBody<IProduct>(this.context.params, this._resetProduct());
-      if (!this.context.transaction) throw null;
-      const response = await ProductController.addProductWithoutPhoto(pbProduct.parseBody(), this.context.transaction);
+      const response = await ProductController.addProductWithoutPhoto(this.#pbProduct.parseBody(), transaction);
       if (typeof response === 'string') throw response;
-      this.context.params = Object.assign(this.context.params, response);
-      if ('id' in response) {
-        this.context.params['id_product'] = response['id'];
-      }
-      this.context.transitionTo(await new BuildReFillProduct());
-      this.context.requestCreate();
+      return { event: EVENT.OK, res: response };
     } catch (error) {
-      this.context.params = error;
-      this.context.sendResponse(error === 'null' ? EVENT.NULL : EVENT.ERROR);
+      return { event: EVENT.ERROR, res: String(error) };
     }
   }
-  // public madeFindAllProducts() {
-  //   try {
-  //     const findAll = new ProductController();
-  //     findAll.setController(this);
-  //     findAll.getAll();
-  //   } catch (error) {
-  //     this.run(error as object, EVENT_ERROR);
-  //   }
-  // }
-  // public adeFindOneProductById() {
-  //   try {
-  //     const findById = new ProductController(this._req);
-  //     findById.setController(this);
-  //     findById.getById();
-  //   } catch (error) {
-  //     this.run(error as object, EVENT_ERROR);
-  //   }
-  // }
-  // private madeChangesOnProduct() {
-  //   try {
-  //     const madeChanges = new ProductController(this._req);
-  //     madeChanges.setController(this);
-  //     madeChanges.modifyProductById();
-  //   } catch (error) {
-  //     this.run(error as object, EVENT_ERROR);
-  //   }
-  // }
 
-  public findByID(): void {
-    this.context.params = 'not implement';
-    this.context.sendResponse(EVENT.ERROR);
+  public static async madeFindAllProducts() {
+    try {
+      const findAll = await ProductController.getAll();
+      if (typeof findAll === 'string') throw findAll;
+      return { event: EVENT.OK, res: findAll };
+    } catch (error) {
+      return { event: EVENT.ERROR, res: String(error) };
+    }
   }
+  public static async madeFindOneProductById(id: number) {
+    try {
+      const findOneProduct = await ProductController.getById(id);
+      if (typeof findOneProduct === 'string') throw findOneProduct;
+      return { event: EVENT.OK, res: findOneProduct };
+    } catch (error) {
+      return { event: EVENT.ERROR, res: String(error) };
+    }
+  }
+  public async madeChangesOnProduct(id: number) {
+    try {
+      const changeProduct = await ProductController.modifyProductById(this.#pbProduct.parseBodyUnStrict(), id);
+      if (typeof changeProduct === 'string') throw changeProduct;
+      return { event: EVENT.OK, res: changeProduct };
+    } catch (error) {
+      return { event: EVENT.ERROR, res: String(error) };
+    }
+  }
+
   private _resetProduct(): IProduct {
     return {
       name: String(),

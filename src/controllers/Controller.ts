@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { EVENT } from '../constants/response-events.constants';
 
 interface IController {
   run(send: object, event: string): any;
@@ -14,5 +14,8 @@ class BuildController {
     this.controller = controller;
   }
 }
+
+type IEvent<T> = Promise<{ event: EVENT; res: string | T }>;
+
 export default BuildController;
-export { IController };
+export { IController, IEvent };

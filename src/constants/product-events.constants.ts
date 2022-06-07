@@ -1,3 +1,4 @@
-const CREATE_PRODUCT = 'create-product';
-
-export { CREATE_PRODUCT };
+export const enum PRODUCT {
+  CREATE = 'create_product',
+  FIND_ONE = 'find_one_product'
+}
