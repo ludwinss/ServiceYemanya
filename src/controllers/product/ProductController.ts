@@ -22,7 +22,10 @@ class ProductController {
   public static getAll() {
     return Product.findAll({
       attributes: ['name', 'description', 'category', 'type'],
-      include: [{ model: Stock, attributes: ['total', 'price', 'id', 'updated_at', 'id_product'] }]
+      include: [
+        { model: Stock, attributes: ['total', 'price', 'id', 'updated_at', 'id_product'] },
+        { model: ProductPhoto, limit: 1 }
+      ]
     })
       .then((product) => {
         if (!product) throw product;
