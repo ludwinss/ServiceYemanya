@@ -19,7 +19,6 @@ class Product extends Model<InferAttributes<Product>, InferCreationAttributes<Pr
   declare name: string;
   declare description: string | null;
   declare category: string | null;
-  declare type: string | null;
   declare created_at: CreationOptional<Date>;
   declare updated_at: CreationOptional<Date>;
 
@@ -57,11 +56,8 @@ Product.init(
     },
     category: {
       type: DataTypes.STRING(1000),
-      allowNull: true
-    },
-    type: {
-      type: DataTypes.STRING,
-      allowNull: true
+      allowNull: false,
+      defaultValue: 'otros'
     },
     created_at: DataTypes.DATE,
     updated_at: DataTypes.DATE

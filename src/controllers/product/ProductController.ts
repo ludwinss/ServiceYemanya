@@ -44,6 +44,7 @@ class ProductController {
   }
 
   static addProductWithoutPhoto(newProduct: IProduct, transaction: Transaction): Promise<IProduct | string> {
+    console.log(newProduct);
     return Product.create(newProduct, { transaction: transaction })
       .then((product) => {
         if (!product) throw product;

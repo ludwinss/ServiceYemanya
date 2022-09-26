@@ -13,7 +13,10 @@ class BuildProduct {
   }
   public async create(transaction: Transaction): IEvent<IProduct> {
     try {
-      const response = await ProductController.addProductWithoutPhoto(this.#pbProduct.parseBody(), transaction);
+      const response = await ProductController.addProductWithoutPhoto(
+        this.#pbProduct.parseBodyUnStrict() as IProduct,
+        transaction
+      );
       if (typeof response === 'string') throw response;
       return { event: EVENT.OK, res: response };
     } catch (error) {
@@ -53,8 +56,7 @@ class BuildProduct {
     return {
       name: String(),
       description: null,
-      category: null,
-      type: null
+      category: null
     };
   }
 }

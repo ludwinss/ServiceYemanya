@@ -18,7 +18,7 @@ class Stock extends Model<InferAttributes<Stock>, InferCreationAttributes<Stock>
   declare price: number;
   declare created_at: CreationOptional<Date>;
   declare updated_at: CreationOptional<Date>;
-
+  declare type: string | null;
   //foreignKeys
   declare id_product: ForeignKey<Product['id']>;
   declare product: NonAttribute<Product>;
@@ -38,6 +38,11 @@ Stock.init(
     total: { type: DataTypes.INTEGER, allowNull: false },
     price: { type: DataTypes.INTEGER, allowNull: false },
     created_at: DataTypes.DATE,
+    type: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: 'unico'
+    },
     updated_at: DataTypes.DATE
   },
   {

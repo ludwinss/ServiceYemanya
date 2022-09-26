@@ -22,7 +22,7 @@ ProductPhoto.belongsTo(Product, {
 });
 
 //Relations Stock (1:1) Product
-Product.hasOne(Stock, {
+Product.hasMany(Stock, {
   foreignKey: {
     name: 'id_product',
     allowNull: false

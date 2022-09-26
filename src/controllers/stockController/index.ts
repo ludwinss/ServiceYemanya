@@ -13,7 +13,7 @@ class BuildStock {
   }
   public async create(transaction: Transaction): IEvent<IStock> {
     try {
-      const responseDB = await StockController.createStock(this.#pbStock.parseBody(), transaction);
+      const responseDB = await StockController.createStock(this.#pbStock.parseBodyUnStrict() as IStock, transaction);
       if (typeof responseDB === 'string') throw responseDB;
       return { event: EVENT.OK, res: responseDB };
     } catch (error) {
@@ -37,6 +37,7 @@ class BuildStock {
   private _resetStock(): IStock {
     return {
       id_product: Number() as any,
+      type: null,
       price: Number(),
       total: Number()
     };
